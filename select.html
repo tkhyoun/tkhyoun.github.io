@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>가계부</title>
+		<style>
+			input[type=date]::-webkit-inner-spin-button {
+				opacity: 1
+			}
+			input[type=date]::-webkit-calendar-picker-indicator {
+				opacity: 1
+			}
+		</style>
+		<script>
+			//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
+			var db = openDatabase('account', '2.0', 'my account', 1 * 1024 * 1024);
+
+			//Initialize the database 날짜 시간,품명,수입,지출,고객,기타
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS account(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
+			});
+
+			function listContacts(year1, year2, items, customer) {
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT * FROM account where date >= '" + year1 + "' AND date < '" + year2 + "' And items like '%" + items + "%' And customer like '%" + customer + "%' order by id desc", [], function(tx, results) {
+
+						var len = results.rows.length;
+						var i;
+						for ( i = 0; i < len; i++) {
+							//Create the row and its cells
+							var contactRow = document.createElement("tr");
+							var id = document.createElement("td");
+							var date = document.createElement("td");
+							var items = document.createElement("td");
+							var income = document.createElement("td");
+							var outlay = document.createElement("td");
+							var customer = document.createElement("td");
+							var etc = document.createElement("td");
+							var removeButton = document.createElement("td");
+							var updateButton = document.createElement("td");
+							//Set values coming from the database
+							id.textContent = results.rows.item(i).id;
+							date.textContent = results.rows.item(i).date;
+							items.textContent = results.rows.item(i).items;
+							income.textContent = results.rows.item(i).income;
+							outlay.textContent = results.rows.item(i).outlay;
+							customer.textContent = results.rows.item(i).customer;
+							etc.textContent = results.rows.item(i).etc;
+
+							//Add cells to the row
+							contactRow.setAttribute("id", "c" + results.rows.item(i).id);
+							contactRow.appendChild(id);
+							contactRow.appendChild(date);
+							contactRow.appendChild(items);
+							contactRow.appendChild(income);
+							contactRow.appendChild(outlay);
+							contactRow.appendChild(customer);
+							contactRow.appendChild(etc);
+							//Add the row to the table
+							document.getElementById("contacts").appendChild(contactRow);
+
+							//						document.getElementById("incomeTotal").innerHTML="테스트1";
+							//'<%= labelcap.ClientID %>'
+						}
+					});
+				});
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT count(*)as 총수 FROM account where date >= '" + year1 + "' AND date < '" + year2 + "' And items like '%" + items + "%' And customer like '%" + customer + "%' order by id desc", [], function(tx, results) {
+						//var len = results.rows.length;
+						document.getElementById("countTotal").innerHTML = "거래항목수  : " + results.rows.item(0).총수;
+					});
+				});
+				var incometotal;
+				//총합계 계산용 변수
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT sum(income)as 수입총액 FROM account where date >= '" + year1 + "' AND date < '" + year2 + "' And items like '%" + items + "%' And customer like '%" + customer + "%' order by id desc", [], function(tx, results) {
+						document.getElementById("incomeTotal").innerHTML = "수입 총액  : " + results.rows.item(0).수입총액.toLocaleString() + "원 ";
+						incometotal = results.rows.item(0).수입총액;
+					});
+				});
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT sum(outlay)as 지출총액 FROM account where date >= '" + year1 + "' AND date < '" + year2 + "' And items like '%" + items + "%' And customer like '%" + customer + "%' order by id desc", [], function(tx, results) {
+						document.getElementById("outlayTotal").innerHTML = "지출 총액  : " + results.rows.item(0).지출총액.toLocaleString() + "원 ";
+						var sum = incometotal + results.rows.item(0).지출총액;
+						document.getElementById("sumTotal").innerHTML = "총합계  : " + sum.toLocaleString() + "원 ";
+					});
+				});
+			}
+
+			function selectItemAdd(selectedValue) {
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT * FROM item", [], function(tx, results) {
+						var select,
+						    option;
+						select = document.getElementById('items');
+						option = document.createElement('option');
+						option.value = "";
+						option.text = "모두";
+						select.add(option);
+						var len = results.rows.length;
+						var i;
+						for ( i = 0; i < len; i++) {
+							//Create the row and its cells
+
+							option = document.createElement('option');
+							option.value = option.text = results.rows.item(i).name;
+							if (option.value == selectedValue) {
+								option.selected = true;
+							};
+							select.add(option);
+						}
+					});
+				});
+			}
+
+			function selectCustomerAdd(selectedValue) {
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT * FROM customer", [], function(tx, results) {
+						var select,
+						    option;
+						select = document.getElementById('customer');
+
+						option = document.createElement('option');
+						option.value = "";
+						option.text = "모두";
+						select.add(option);
+
+						var len = results.rows.length;
+						var i;
+						for ( i = 0; i < len; i++) {
+							//Create the row and its cells
+
+							option = document.createElement('option');
+							option.value = option.text = results.rows.item(i).name;
+							if (option.value == selectedValue) {
+								option.selected = true;
+							};
+							select.add(option);
+						}
+					});
+				});
+			}
+
+			//		window.addEventListener("load", listContacts(year), true);
+
+			function SelectList() {
+				var date1 = document.getElementById("date1").value;
+				var date2 = document.getElementById("date2").value;
+				var items = document.getElementById("items").value;
+				var customer = document.getElementById("customer").value
+				location.href = "./select.html?date1=" + escape(date1) + "&date2=" + escape(date2) + "&items=" + escape(items) + "&customer=" + escape(customer);
+
+			};
+			//get 형식 파라매타 가져오기
+
+			var Request = function() {
+				this.getParameter = function(name) {
+					var rtnval = '';
+					var nowAddress = unescape(location.href);
+					var parameters = (nowAddress.slice(nowAddress.indexOf('?') + 1, nowAddress.length)).split('&');
+					for (var i = 0; i < parameters.length; i++) {
+						var varName = parameters[i].split('=')[0];
+						if (varName.toUpperCase() == name.toUpperCase()) {
+							rtnval = parameters[i].split('=')[1];
+							break;
+						}
+					}
+					return rtnval;
+					//    document.write( rtnval );
+				}
+			}
+			var request = new Request();
+			//document.write(request.getParameter("items"));
+
+		</script>
+	</head>
+	<body>
+		<a href="index.html">초기 화면</a>
+		<a href="year.html">연간 집계</a>
+		<a href="select.html">항목별 검색</a>
+		<a href="item.html">품목 등록</a>
+		<a href="customer.html">거래처 등록</a>
+		<a href="backup.html">DB 백업</a>
+		<div id="container">
+			<section id="input">
+				<h1></h1>
+				<label>
+					<input type="text" name="date" id="date" disabled hidden/>
+					<!--
+					<input type="datetime-local" id="date" name="date" value="2013-10-09T15:38:15" onchange="dateOnchange(document.getElementById('date').value)" />
+					-->
+					<input type="date" id="date1" name="date1" value=""/>
+					-
+					<input type="date" id="date2" name="date2" value=""/>
+					까지
+					<script>
+						var d = new Date();
+						var nowDay = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						var nowTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+						var week = "요일:" + d.getDay();
+						var weekarr = new Array("일", "월", "화", "수", "목", "금", "토");
+						document.write(weekarr[d.getDay()] + "요일");
+						function utc(date) {
+							if (10 > date) {
+								return "0" + date;
+							} else {
+								return date
+							}
+						};
+
+						//현재 날짜
+						var bdate1 = d.getFullYear() + "-" + "01" + "-" + "01";
+						var bdate2 = d.getFullYear() + "-" + "12" + "-" + "31";
+						document.getElementById("date1").value = bdate1;
+						document.getElementById("date2").value = bdate2;
+
+						//날짜 변경시 년도별 표시
+						function dateOnchange(data) {
+							var dateset = data;
+							location.href = "./index.html?date=" + escape(dateset);
+						};
+
+					</script> </label>
+				<label>검색 품목:
+					<select name='items' id="items">
+						<!--
+						<option value='옥수수' selected>옥수수</option>
+						<option value='땅콩'>땅콩</option>
+						<option value='번데기'>번데기</option>
+						<option value='참외'>참외</option>
+						<option value='운송비'>운송비</option>
+						-->
+					</select> </label>
+				<!--
+				<label>수입:
+				<input id="income" type="number" min="0" max="3001000" step="1000" value ="" pattern="[0-9]*"/>
+				</label>
+				<label>지출:
+				<input id="outlay" type="number"  min="0" max="3001000" step="1000" value="" pattern="[0-9]*"/>
+				</label>
+				-->
+				<label>검색 고객:
+					<select name='customer' id="customer">
+						<!--
+						<option value='충북' selected>충북</option>
+						<option value='한양'>한양</option>
+						<option value='대구'>대구</option>
+						<option value='성주'>성주</option>
+						-->
+					</select> </label>
+				<!--
+				<label>기타:
+				<input type="text" name="etc" id="etc" />
+				</label>
+				-->
+				<button onclick="SelectList()">
+					검색
+				</button>
+
+			</section>
+
+			<section id="outTotal">
+				<h1></h1>
+				<label id=countTotal></label>
+				<label id=incomeTotal></label>
+				<label id=outlayTotal></label>
+				<label id=sumTotal></label>
+			</section>
+			<section id="output">
+				<h1></h1>
+				<table id="contacts" border="1" cellspacing="0" style="width:100%">
+					<th>번호</th>
+					<th>날짜</th>
+					<th>품목</th>
+					<th>수입</th>
+					<th>지출</th>
+					<th>고객</th>
+					<th>기타</th>
+				</table>
+			</section>
+		</div>
+		<script>
+			if (request.getParameter("items") == "") {
+				document.getElementById("items").selectedIndex = "0";
+			} else {
+				document.getElementById("items").value = request.getParameter("items");
+			};
+			if (request.getParameter("customer") == "") {
+				document.getElementById("customer").selectedIndex = "0";
+			} else {
+				document.getElementById("customer").value = request.getParameter("customer");
+			};
+			//selectItemAdd();
+			//selectCustomerAdd();
+
+			//get 형식 데이타 확인
+			if (request.getParameter("date1") == "") {
+				var year1 = document.getElementById("date1").value;
+				var year2 = document.getElementById("date2").value;
+				var s = year2.split("-");
+				s[2] = Number(s[2]) + 1;
+				year2 = s[0] + "-" + s[1] + "-" + s[2];
+				selectItemAdd("");
+				selectCustomerAdd("");
+				window.addEventListener("load", listContacts(year1, year2, "", ""), true);
+				//현재날짜
+			} else {
+				document.getElementById("date1").value = request.getParameter("date1");
+				document.getElementById("date2").value = request.getParameter("date2");
+				var items = request.getParameter("items");
+				var customer = request.getParameter("customer");
+				selectItemAdd(items);
+				selectCustomerAdd(customer);
+				var year1 = request.getParameter("date1");
+				var year2 = request.getParameter("date2");
+				var s = year2.split("-");
+				s[2] = Number(s[2]) + 1;
+				year2 = s[0] + "-" + s[1] + "-" + s[2];
+
+				//var items=request.getParameter("items");
+
+				window.addEventListener("load", listContacts(year1, year2, items, customer), true);
+				//변경된 날짜 표시
+			};
+			//window.addEventListener("load", listContacts("2015-01-01", "2015-12-31"), true);
+		</script>
+	</body>
+</html>

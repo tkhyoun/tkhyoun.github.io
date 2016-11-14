@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script src="javascripts/plotly-latest.min.js"></script>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>연간집계</title>
+		<style>
+			input[type=date]::-webkit-inner-spin-button {
+				opacity: 1
+			}
+			input[type=date]::-webkit-calendar-picker-indicator {
+				opacity: 1
+			}
+		</style>
+		<script>
+							//차트 추가
+							var chartY=[];
+							var chartData=[];
+
+
+			var d = new Date();
+			var nowDay = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+			var nowTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+			var week = "요일:" + d.getDay();
+			var weekarr = new Array("일", "월", "화", "수", "목", "금", "토");
+			function utc(date) {
+				if (10 > date) {
+					return "0" + date;
+				} else {
+					return date
+				}
+			};
+
+			//현재 날짜
+			var bdate = d.getFullYear() + "-" + utc((d.getMonth() + 1)) + "-" + utc(d.getDate());
+
+			//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
+			var db = openDatabase('account', '2.0', 'my account', 1 * 1024 * 1024);
+
+			//Initialize the database 날짜 시간,품명,수입,지출,고객,기타
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS account(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
+			});
+
+			function OnDateSet() {
+				document.getElementById("date").value = bdate;
+				document.getElementById("week").innerHTML = weekarr[d.getDay()] + " 요일";
+			};
+
+			function listContacts(year) {
+
+				db.transaction(function(tx) {
+
+					tx.executeSql("SELECT items,SUM(CASE WHEN date LIKE '" + year + "-01%' THEN income ELSE 0 END) month1 " + ",SUM(CASE WHEN date LIKE '" + year + "-02%' THEN income ELSE 0 END) month2 " + ",SUM(CASE WHEN date LIKE '" + year + "-03%' THEN income ELSE 0 END) month3 " + ",SUM(CASE WHEN date LIKE '" + year + "-04%' THEN income ELSE 0 END) month4 " + ",SUM(CASE WHEN date LIKE '" + year + "-05%' THEN income ELSE 0 END) month5 " + ",SUM(CASE WHEN date LIKE '" + year + "-06%' THEN income ELSE 0 END) month6 " + ",SUM(CASE WHEN date LIKE '" + year + "-07%' THEN income ELSE 0 END) month7 " + ",SUM(CASE WHEN date LIKE '" + year + "-08%' THEN income ELSE 0 END) month8 " + ",SUM(CASE WHEN date LIKE '" + year + "-09%' THEN income ELSE 0 END) month9 " + ",SUM(CASE WHEN date LIKE '" + year + "-10%' THEN income ELSE 0 END) month10 " + ",SUM(CASE WHEN date LIKE '" + year + "-11%' THEN income ELSE 0 END) month11 " + ",SUM(CASE WHEN date LIKE '" + year + "-12%' THEN income ELSE 0 END) month12 " + ",SUM(CASE WHEN date LIKE '" + year + "%' THEN income ELSE 0 END) year " + "FROM account " + "group by items order by month1 desc", [], function(tx, results) {
+						var len = results.rows.length;
+						
+							//if(results.rows.item(2).month1==null){
+							//	results.rows.item(2).month1=0;
+							//};
+							//results.rows.item(0).month1="기사도";
+							//var test="되는거 맞냐";
+							//results.rows.item(4)['month1'].value=0;
+							//document.write(results.rows.item(4)['month1']);
+							//document.write(results.rows.item(0).items);
+							//document.write(results.rows.item(1).items);
+							//document.write(results.rows.item(2).items);
+							//document.write(results.rows.item(3).items);
+							//document.write(results.rows.item(4).items);
+							//document.write(results.rows.item(5).items+"<br>");
+							//document.write(results.rows.item(0).month1);
+							//document.write(results.rows.item(1).month1);
+							//document.write(results.rows.item(2).month1);
+							//document.write(results.rows.item(3).month1);
+							//document.write(results.rows.item(4).month1);
+							//document.write(results.rows.item(5).month1);
+							//document.write(results.rows.item(6).month1);
+					
+
+						var totalSum1 = 0;
+						var totalSum2 = 0;
+						var totalSum3 = 0;
+						var totalSum4 = 0;
+						var totalSum5 = 0;
+						var totalSum6 = 0;
+						var totalSum7 = 0;
+						var totalSum8 = 0;
+						var totalSum9 = 0;
+						var totalSum10 = 0;
+						var totalSum11 = 0;
+						var totalSum12 = 0;
+						var totalSumYear = 0;
+						var i;
+						for ( i = 0; i < len; i++) {
+
+							var contactRow = document.createElement("tr");
+							var items = document.createElement("td");
+							var month1 = document.createElement("td");
+							var month2 = document.createElement("td");
+							var month3 = document.createElement("td");
+							var month4 = document.createElement("td");
+							var month5 = document.createElement("td");
+							var month6 = document.createElement("td");
+							var month7 = document.createElement("td");
+							var month8 = document.createElement("td");
+							var month9 = document.createElement("td");
+							var month10 = document.createElement("td");
+							var month11 = document.createElement("td");
+							var month12 = document.createElement("td");
+							var year = document.createElement("td");
+
+							//Set values coming from the database
+
+							items.textContent = results.rows.item(i).items;
+							month1.textContent = results.rows.item(i).month1;
+							month2.textContent = results.rows.item(i).month2;
+							month3.textContent = results.rows.item(i).month3;
+							month4.textContent = results.rows.item(i).month4;
+							month5.textContent = results.rows.item(i).month5;
+							month6.textContent = results.rows.item(i).month6;
+							month7.textContent = results.rows.item(i).month7;
+							month8.textContent = results.rows.item(i).month8;
+							month9.textContent = results.rows.item(i).month9;
+							month10.textContent = results.rows.item(i).month10;
+							month11.textContent = results.rows.item(i).month11;
+							month12.textContent = results.rows.item(i).month12;
+							year.textContent = results.rows.item(i).year.toLocaleString();
+
+							totalSum1 = totalSum1 + results.rows.item(i).month1;
+							totalSum2 = totalSum2 + results.rows.item(i).month2;
+							totalSum3 = totalSum3 + results.rows.item(i).month3;
+							totalSum4 = totalSum4 + results.rows.item(i).month4;
+							totalSum5 = totalSum5 + results.rows.item(i).month5;
+							totalSum6 = totalSum6 + results.rows.item(i).month6;
+							totalSum7 = totalSum7 + results.rows.item(i).month7;
+							totalSum8 = totalSum8 + results.rows.item(i).month8;
+							totalSum9 = totalSum9 + results.rows.item(i).month9;
+							totalSum10 = totalSum10 + results.rows.item(i).month10;
+							totalSum11 = totalSum11 + results.rows.item(i).month11;
+							totalSum12 = totalSum12 + results.rows.item(i).month12;
+							totalSumYear = totalSumYear + results.rows.item(i).year;
+
+							contactRow.appendChild(items);
+							contactRow.appendChild(month1);
+							contactRow.appendChild(month2);
+							contactRow.appendChild(month3);
+							contactRow.appendChild(month4);
+							contactRow.appendChild(month5);
+							contactRow.appendChild(month6);
+							contactRow.appendChild(month7);
+							contactRow.appendChild(month8);
+							contactRow.appendChild(month9);
+							contactRow.appendChild(month10);
+							contactRow.appendChild(month11);
+							contactRow.appendChild(month12);
+							contactRow.appendChild(year);
+							//contactRow.appendChild(monthset);
+							document.getElementById("contacts").appendChild(contactRow);
+                            
+                            
+							
+							//chart 추가
+							function zeroReturn(arg1){
+   											if(arg1==0)
+   											return("");
+											else{
+											var arg3;
+											arg3=Number(arg1);
+											var arg2=arg3.toLocaleString();
+											
+											return(arg2+" "+items.textContent);	
+												}
+											};
+							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
+							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
+							var trace = {
+ 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  									 y: chartY,
+  									type: 'scatter',
+
+ 									 mode: 'lines+markers+text',
+  									name: '',
+  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
+  									textposition: 'right',
+  									textfont: {
+  									  size: 15
+ 									 }
+
+									};
+							chartData.push(trace);
+							   
+
+						}
+						//차트 추가
+						Plotly.newPlot('my-graph1', chartData, layout);
+						chartY.splice(0,chartY.length);
+						chartData.splice(0,chartData.length);
+                        
+
+						var contactRow = document.createElement("tr");
+						var total1 = document.createElement("td");
+						var total2 = document.createElement("td");
+						var total3 = document.createElement("td");
+						var total4 = document.createElement("td");
+						var total5 = document.createElement("td");
+						var total6 = document.createElement("td");
+						var total7 = document.createElement("td");
+						var total8 = document.createElement("td");
+						var total9 = document.createElement("td");
+						var total10 = document.createElement("td");
+						var total11 = document.createElement("td");
+						var total12 = document.createElement("td");
+						var totalYear = document.createElement("td");
+						var temp = document.createElement("td");
+						temp.textContent = "합계";
+						total1.textContent = totalSum1.toLocaleString();
+						total2.textContent = totalSum2.toLocaleString();
+						total3.textContent = totalSum3.toLocaleString();
+						total4.textContent = totalSum4.toLocaleString();
+						total5.textContent = totalSum5.toLocaleString();
+						total6.textContent = totalSum6.toLocaleString();
+						total7.textContent = totalSum7.toLocaleString();
+						total8.textContent = totalSum8.toLocaleString();
+						total9.textContent = totalSum9.toLocaleString();
+						total10.textContent = totalSum10.toLocaleString();
+						total11.textContent = totalSum11.toLocaleString();
+						total12.textContent = totalSum12.toLocaleString();
+						totalYear.textContent = totalSumYear.toLocaleString();
+
+						contactRow.appendChild(temp);
+						contactRow.appendChild(total1);
+						contactRow.appendChild(total2);
+						contactRow.appendChild(total3);
+						contactRow.appendChild(total4);
+						contactRow.appendChild(total5);
+						contactRow.appendChild(total6);
+						contactRow.appendChild(total7);
+						contactRow.appendChild(total8);
+						contactRow.appendChild(total9);
+						contactRow.appendChild(total10);
+						contactRow.appendChild(total11);
+						contactRow.appendChild(total12);
+						contactRow.appendChild(totalYear);
+
+						document.getElementById("contacts").appendChild(contactRow);
+					});
+				});
+			}
+
+			function listContacts2(year) {
+				db.transaction(function(tx) {
+
+					tx.executeSql("SELECT items,SUM(CASE WHEN date LIKE '" + year + "-01%' THEN outlay ELSE 0 END) month1 " + ",SUM(CASE WHEN date LIKE '" + year + "-02%' THEN outlay ELSE 0 END) month2 " + ",SUM(CASE WHEN date LIKE '" + year + "-03%' THEN outlay ELSE 0 END) month3 " + ",SUM(CASE WHEN date LIKE '" + year + "-04%' THEN outlay ELSE 0 END) month4 " + ",SUM(CASE WHEN date LIKE '" + year + "-05%' THEN outlay ELSE 0 END) month5 " + ",SUM(CASE WHEN date LIKE '" + year + "-06%' THEN outlay ELSE 0 END) month6 " + ",SUM(CASE WHEN date LIKE '" + year + "-07%' THEN outlay ELSE 0 END) month7 " + ",SUM(CASE WHEN date LIKE '" + year + "-08%' THEN outlay ELSE 0 END) month8 " + ",SUM(CASE WHEN date LIKE '" + year + "-09%' THEN outlay ELSE 0 END) month9 " + ",SUM(CASE WHEN date LIKE '" + year + "-10%' THEN outlay ELSE 0 END) month10 " + ",SUM(CASE WHEN date LIKE '" + year + "-11%' THEN outlay ELSE 0 END) month11 " + ",SUM(CASE WHEN date LIKE '" + year + "-12%' THEN outlay ELSE 0 END) month12 " + ",SUM(CASE WHEN date LIKE '" + year + "%' THEN outlay ELSE 0 END) year " + "FROM account " + "group by items order by month1 desc", [], function(tx, results) {
+						var len = results.rows.length;
+
+						var totalSum1 = 0;
+						var totalSum2 = 0;
+						var totalSum3 = 0;
+						var totalSum4 = 0;
+						var totalSum5 = 0;
+						var totalSum6 = 0;
+						var totalSum7 = 0;
+						var totalSum8 = 0;
+						var totalSum9 = 0;
+						var totalSum10 = 0;
+						var totalSum11 = 0;
+						var totalSum12 = 0;
+						var totalSumYear = 0;
+						var i;
+						for ( i = 0; i < len; i++) {
+
+							var contactRow = document.createElement("tr");
+							var items = document.createElement("td");
+							var month1 = document.createElement("td");
+							var month2 = document.createElement("td");
+							var month3 = document.createElement("td");
+							var month4 = document.createElement("td");
+							var month5 = document.createElement("td");
+							var month6 = document.createElement("td");
+							var month7 = document.createElement("td");
+							var month8 = document.createElement("td");
+							var month9 = document.createElement("td");
+							var month10 = document.createElement("td");
+							var month11 = document.createElement("td");
+							var month12 = document.createElement("td");
+							var year = document.createElement("td");
+
+							//Set values coming from the database
+							items.textContent = results.rows.item(i).items;
+							month1.textContent = results.rows.item(i).month1;
+							month2.textContent = results.rows.item(i).month2;
+							month3.textContent = results.rows.item(i).month3;
+							month4.textContent = results.rows.item(i).month4;
+							month5.textContent = results.rows.item(i).month5;
+							month6.textContent = results.rows.item(i).month6;
+							month7.textContent = results.rows.item(i).month7;
+							month8.textContent = results.rows.item(i).month8;
+							month9.textContent = results.rows.item(i).month9;
+							month10.textContent = results.rows.item(i).month10;
+							month11.textContent = results.rows.item(i).month11;
+							month12.textContent = results.rows.item(i).month12;
+							year.textContent = results.rows.item(i).year.toLocaleString();
+
+							totalSum1 = totalSum1 + results.rows.item(i).month1;
+							totalSum2 = totalSum2 + results.rows.item(i).month2;
+							totalSum3 = totalSum3 + results.rows.item(i).month3;
+							totalSum4 = totalSum4 + results.rows.item(i).month4;
+							totalSum5 = totalSum5 + results.rows.item(i).month5;
+							totalSum6 = totalSum6 + results.rows.item(i).month6;
+							totalSum7 = totalSum7 + results.rows.item(i).month7;
+							totalSum8 = totalSum8 + results.rows.item(i).month8;
+							totalSum9 = totalSum9 + results.rows.item(i).month9;
+							totalSum10 = totalSum10 + results.rows.item(i).month10;
+							totalSum11 = totalSum11 + results.rows.item(i).month11;
+							totalSum12 = totalSum12 + results.rows.item(i).month12;
+							totalSumYear = totalSumYear + results.rows.item(i).year;
+
+							contactRow.appendChild(items);
+							contactRow.appendChild(month1);
+							contactRow.appendChild(month2);
+							contactRow.appendChild(month3);
+							contactRow.appendChild(month4);
+							contactRow.appendChild(month5);
+							contactRow.appendChild(month6);
+							contactRow.appendChild(month7);
+							contactRow.appendChild(month8);
+							contactRow.appendChild(month9);
+							contactRow.appendChild(month10);
+							contactRow.appendChild(month11);
+							contactRow.appendChild(month12);
+							contactRow.appendChild(year);
+							//contactRow.appendChild(monthset);
+							document.getElementById("contacts2").appendChild(contactRow);
+
+                            
+                            
+							
+							//chart 추가
+							function zeroReturn(arg1){
+   											if(arg1==0)
+   											return("");
+											else{
+											var arg3;
+											arg3=Number(arg1);
+											var arg2=arg3.toLocaleString();
+											
+											return(arg2+" "+items.textContent);	
+												}
+											};
+							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
+							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
+							var trace = {
+ 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  									 y: chartY,
+  									type: 'scatter',
+
+ 									 mode: 'lines+markers+text',
+  									name: '',
+  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
+  									textposition: 'right',
+  									textfont: {
+  									  size: 15
+ 									 }
+
+									};
+							chartData.push(trace);
+							   
+
+						}
+						//차트 추가
+						Plotly.newPlot('my-graph2', chartData, layout);
+						chartY.splice(0,chartY.length);
+						chartData.splice(0,chartData.length);
+                        
+
+						var contactRow = document.createElement("tr");
+						var total1 = document.createElement("td");
+						var total2 = document.createElement("td");
+						var total3 = document.createElement("td");
+						var total4 = document.createElement("td");
+						var total5 = document.createElement("td");
+						var total6 = document.createElement("td");
+						var total7 = document.createElement("td");
+						var total8 = document.createElement("td");
+						var total9 = document.createElement("td");
+						var total10 = document.createElement("td");
+						var total11 = document.createElement("td");
+						var total12 = document.createElement("td");
+						var totalYear = document.createElement("td");
+						var temp = document.createElement("td");
+						temp.textContent = "합계";
+						total1.textContent = totalSum1.toLocaleString();
+						total2.textContent = totalSum2.toLocaleString();
+						total3.textContent = totalSum3.toLocaleString();
+						total4.textContent = totalSum4.toLocaleString();
+						total5.textContent = totalSum5.toLocaleString();
+						total6.textContent = totalSum6.toLocaleString();
+						total7.textContent = totalSum7.toLocaleString();
+						total8.textContent = totalSum8.toLocaleString();
+						total9.textContent = totalSum9.toLocaleString();
+						total10.textContent = totalSum10.toLocaleString();
+						total11.textContent = totalSum11.toLocaleString();
+						total12.textContent = totalSum12.toLocaleString();
+						totalYear.textContent = totalSumYear.toLocaleString();
+
+						contactRow.appendChild(temp);
+						contactRow.appendChild(total1);
+						contactRow.appendChild(total2);
+						contactRow.appendChild(total3);
+						contactRow.appendChild(total4);
+						contactRow.appendChild(total5);
+						contactRow.appendChild(total6);
+						contactRow.appendChild(total7);
+						contactRow.appendChild(total8);
+						contactRow.appendChild(total9);
+						contactRow.appendChild(total10);
+						contactRow.appendChild(total11);
+						contactRow.appendChild(total12);
+						contactRow.appendChild(totalYear);
+
+						document.getElementById("contacts2").appendChild(contactRow);
+					});
+				});
+			}
+
+            
+			function listContacts3(year) {
+
+				db.transaction(function(tx) {
+
+					tx.executeSql("SELECT customer,SUM(CASE WHEN date LIKE '" + year + "-01%' THEN income ELSE 0 END) month1 " + ",SUM(CASE WHEN date LIKE '" + year + "-02%' THEN income ELSE 0 END) month2 " + ",SUM(CASE WHEN date LIKE '" + year + "-03%' THEN income ELSE 0 END) month3 " + ",SUM(CASE WHEN date LIKE '" + year + "-04%' THEN income ELSE 0 END) month4 " + ",SUM(CASE WHEN date LIKE '" + year + "-05%' THEN income ELSE 0 END) month5 " + ",SUM(CASE WHEN date LIKE '" + year + "-06%' THEN income ELSE 0 END) month6 " + ",SUM(CASE WHEN date LIKE '" + year + "-07%' THEN income ELSE 0 END) month7 " + ",SUM(CASE WHEN date LIKE '" + year + "-08%' THEN income ELSE 0 END) month8 " + ",SUM(CASE WHEN date LIKE '" + year + "-09%' THEN income ELSE 0 END) month9 " + ",SUM(CASE WHEN date LIKE '" + year + "-10%' THEN income ELSE 0 END) month10 " + ",SUM(CASE WHEN date LIKE '" + year + "-11%' THEN income ELSE 0 END) month11 " + ",SUM(CASE WHEN date LIKE '" + year + "-12%' THEN income ELSE 0 END) month12 " + ",SUM(CASE WHEN date LIKE '" + year + "%' THEN income ELSE 0 END) year " + "FROM account " + "group by customer order by month1 desc", [], function(tx, results) {
+						var len = results.rows.length;
+						
+						var totalSum1 = 0;
+						var totalSum2 = 0;
+						var totalSum3 = 0;
+						var totalSum4 = 0;
+						var totalSum5 = 0;
+						var totalSum6 = 0;
+						var totalSum7 = 0;
+						var totalSum8 = 0;
+						var totalSum9 = 0;
+						var totalSum10 = 0;
+						var totalSum11 = 0;
+						var totalSum12 = 0;
+						var totalSumYear = 0;
+						var i;
+						for ( i = 0; i < len; i++) {
+
+							var contactRow = document.createElement("tr");
+							var items = document.createElement("td");
+							var month1 = document.createElement("td");
+							var month2 = document.createElement("td");
+							var month3 = document.createElement("td");
+							var month4 = document.createElement("td");
+							var month5 = document.createElement("td");
+							var month6 = document.createElement("td");
+							var month7 = document.createElement("td");
+							var month8 = document.createElement("td");
+							var month9 = document.createElement("td");
+							var month10 = document.createElement("td");
+							var month11 = document.createElement("td");
+							var month12 = document.createElement("td");
+							var year = document.createElement("td");
+
+							//Set values coming from the database
+
+							items.textContent = results.rows.item(i).customer;
+							month1.textContent = results.rows.item(i).month1;
+							month2.textContent = results.rows.item(i).month2;
+							month3.textContent = results.rows.item(i).month3;
+							month4.textContent = results.rows.item(i).month4;
+							month5.textContent = results.rows.item(i).month5;
+							month6.textContent = results.rows.item(i).month6;
+							month7.textContent = results.rows.item(i).month7;
+							month8.textContent = results.rows.item(i).month8;
+							month9.textContent = results.rows.item(i).month9;
+							month10.textContent = results.rows.item(i).month10;
+							month11.textContent = results.rows.item(i).month11;
+							month12.textContent = results.rows.item(i).month12;
+							year.textContent = results.rows.item(i).year.toLocaleString();
+
+							totalSum1 = totalSum1 + results.rows.item(i).month1;
+							totalSum2 = totalSum2 + results.rows.item(i).month2;
+							totalSum3 = totalSum3 + results.rows.item(i).month3;
+							totalSum4 = totalSum4 + results.rows.item(i).month4;
+							totalSum5 = totalSum5 + results.rows.item(i).month5;
+							totalSum6 = totalSum6 + results.rows.item(i).month6;
+							totalSum7 = totalSum7 + results.rows.item(i).month7;
+							totalSum8 = totalSum8 + results.rows.item(i).month8;
+							totalSum9 = totalSum9 + results.rows.item(i).month9;
+							totalSum10 = totalSum10 + results.rows.item(i).month10;
+							totalSum11 = totalSum11 + results.rows.item(i).month11;
+							totalSum12 = totalSum12 + results.rows.item(i).month12;
+							totalSumYear = totalSumYear + results.rows.item(i).year;
+
+							contactRow.appendChild(items);
+							contactRow.appendChild(month1);
+							contactRow.appendChild(month2);
+							contactRow.appendChild(month3);
+							contactRow.appendChild(month4);
+							contactRow.appendChild(month5);
+							contactRow.appendChild(month6);
+							contactRow.appendChild(month7);
+							contactRow.appendChild(month8);
+							contactRow.appendChild(month9);
+							contactRow.appendChild(month10);
+							contactRow.appendChild(month11);
+							contactRow.appendChild(month12);
+							contactRow.appendChild(year);
+							//contactRow.appendChild(monthset);
+							document.getElementById("contacts3").appendChild(contactRow);
+
+                            
+                            
+							
+							//chart 추가
+							function zeroReturn(arg1){
+   											if(arg1==0)
+   											return("");
+											else{
+											var arg3;
+											arg3=Number(arg1);
+											var arg2=arg3.toLocaleString();
+											
+											return(arg2+" "+items.textContent);	
+												}
+											};
+							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
+							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
+							var trace = {
+ 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  									 y: chartY,
+  									type: 'scatter',
+
+ 									 mode: 'lines+markers+text',
+  									name: '',
+  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
+  									textposition: 'right',
+  									textfont: {
+  									  size: 15
+ 									 }
+
+									};
+							chartData.push(trace);
+							   
+
+						}
+						//차트 추가
+						Plotly.newPlot('my-graph3', chartData, layout);
+						chartY.splice(0,chartY.length);
+						chartData.splice(0,chartData.length);
+                        
+
+						var contactRow = document.createElement("tr");
+						var total1 = document.createElement("td");
+						var total2 = document.createElement("td");
+						var total3 = document.createElement("td");
+						var total4 = document.createElement("td");
+						var total5 = document.createElement("td");
+						var total6 = document.createElement("td");
+						var total7 = document.createElement("td");
+						var total8 = document.createElement("td");
+						var total9 = document.createElement("td");
+						var total10 = document.createElement("td");
+						var total11 = document.createElement("td");
+						var total12 = document.createElement("td");
+						var totalYear = document.createElement("td");
+						var temp = document.createElement("td");
+						temp.textContent = "합계";
+						total1.textContent = totalSum1.toLocaleString();
+						total2.textContent = totalSum2.toLocaleString();
+						total3.textContent = totalSum3.toLocaleString();
+						total4.textContent = totalSum4.toLocaleString();
+						total5.textContent = totalSum5.toLocaleString();
+						total6.textContent = totalSum6.toLocaleString();
+						total7.textContent = totalSum7.toLocaleString();
+						total8.textContent = totalSum8.toLocaleString();
+						total9.textContent = totalSum9.toLocaleString();
+						total10.textContent = totalSum10.toLocaleString();
+						total11.textContent = totalSum11.toLocaleString();
+						total12.textContent = totalSum12.toLocaleString();
+						totalYear.textContent = totalSumYear.toLocaleString();
+
+						contactRow.appendChild(temp);
+						contactRow.appendChild(total1);
+						contactRow.appendChild(total2);
+						contactRow.appendChild(total3);
+						contactRow.appendChild(total4);
+						contactRow.appendChild(total5);
+						contactRow.appendChild(total6);
+						contactRow.appendChild(total7);
+						contactRow.appendChild(total8);
+						contactRow.appendChild(total9);
+						contactRow.appendChild(total10);
+						contactRow.appendChild(total11);
+						contactRow.appendChild(total12);
+						contactRow.appendChild(totalYear);
+
+						document.getElementById("contacts3").appendChild(contactRow);
+					});
+				});
+			}
+			function listContacts4(year) {
+
+
+
+				db.transaction(function(tx) {		
+	
+					tx.executeSql("SELECT customer,SUM(CASE WHEN date LIKE '" + year + "-01%' THEN outlay ELSE 0 END) month1 " + ",SUM(CASE WHEN date LIKE '" + year + "-02%' THEN outlay ELSE 0 END) month2 " + ",SUM(CASE WHEN date LIKE '" + year + "-03%' THEN outlay ELSE 0 END) month3 " + ",SUM(CASE WHEN date LIKE '" + year + "-04%' THEN outlay ELSE 0 END) month4 " + ",SUM(CASE WHEN date LIKE '" + year + "-05%' THEN outlay ELSE 0 END) month5 " + ",SUM(CASE WHEN date LIKE '" + year + "-06%' THEN outlay ELSE 0 END) month6 " + ",SUM(CASE WHEN date LIKE '" + year + "-07%' THEN outlay ELSE 0 END) month7 " + ",SUM(CASE WHEN date LIKE '" + year + "-08%' THEN outlay ELSE 0 END) month8 " + ",SUM(CASE WHEN date LIKE '" + year + "-09%' THEN outlay ELSE 0 END) month9 " + ",SUM(CASE WHEN date LIKE '" + year + "-10%' THEN outlay ELSE 0 END) month10 " + ",SUM(CASE WHEN date LIKE '" + year + "-11%' THEN outlay ELSE 0 END) month11 " + ",SUM(CASE WHEN date LIKE '" + year + "-12%' THEN outlay ELSE 0 END) month12 " + ",SUM(CASE WHEN date LIKE '" + year + "%' THEN outlay ELSE 0 END) year " + "FROM account " + "group by customer order by month1 desc", [], function(tx, results) {
+						var len = results.rows.length;
+
+						var totalSum1 = 0;
+						var totalSum2 = 0;
+						var totalSum3 = 0;
+						var totalSum4 = 0;
+						var totalSum5 = 0;
+						var totalSum6 = 0;
+						var totalSum7 = 0;
+						var totalSum8 = 0;
+						var totalSum9 = 0;
+						var totalSum10 = 0;
+						var totalSum11 = 0;
+						var totalSum12 = 0;
+						var totalSumYear = 0;
+						var i;
+						for ( i = 0; i < len; i++) {
+
+							var contactRow = document.createElement("tr");
+							var items = document.createElement("td");
+							var month1 = document.createElement("td");
+							var month2 = document.createElement("td");
+							var month3 = document.createElement("td");
+							var month4 = document.createElement("td");
+							var month5 = document.createElement("td");
+							var month6 = document.createElement("td");
+							var month7 = document.createElement("td");
+							var month8 = document.createElement("td");
+							var month9 = document.createElement("td");
+							var month10 = document.createElement("td");
+							var month11 = document.createElement("td");
+							var month12 = document.createElement("td");
+							var year = document.createElement("td");
+
+							//Set values coming from the database
+							items.textContent = results.rows.item(i).customer;
+							month1.textContent = results.rows.item(i).month1;
+							month2.textContent = results.rows.item(i).month2;
+							month3.textContent = results.rows.item(i).month3;
+							month4.textContent = results.rows.item(i).month4;
+							month5.textContent = results.rows.item(i).month5;
+							month6.textContent = results.rows.item(i).month6;
+							month7.textContent = results.rows.item(i).month7;
+							month8.textContent = results.rows.item(i).month8;
+							month9.textContent = results.rows.item(i).month9;
+							month10.textContent = results.rows.item(i).month10;
+							month11.textContent = results.rows.item(i).month11;
+							month12.textContent = results.rows.item(i).month12;
+							year.textContent = results.rows.item(i).year.toLocaleString();
+
+							totalSum1 = totalSum1 + results.rows.item(i).month1;
+							totalSum2 = totalSum2 + results.rows.item(i).month2;
+							totalSum3 = totalSum3 + results.rows.item(i).month3;
+							totalSum4 = totalSum4 + results.rows.item(i).month4;
+							totalSum5 = totalSum5 + results.rows.item(i).month5;
+							totalSum6 = totalSum6 + results.rows.item(i).month6;
+							totalSum7 = totalSum7 + results.rows.item(i).month7;
+							totalSum8 = totalSum8 + results.rows.item(i).month8;
+							totalSum9 = totalSum9 + results.rows.item(i).month9;
+							totalSum10 = totalSum10 + results.rows.item(i).month10;
+							totalSum11 = totalSum11 + results.rows.item(i).month11;
+							totalSum12 = totalSum12 + results.rows.item(i).month12;
+							totalSumYear = totalSumYear + results.rows.item(i).year;
+
+							contactRow.appendChild(items);
+							contactRow.appendChild(month1);
+							contactRow.appendChild(month2);
+							contactRow.appendChild(month3);
+							contactRow.appendChild(month4);
+							contactRow.appendChild(month5);
+							contactRow.appendChild(month6);
+							contactRow.appendChild(month7);
+							contactRow.appendChild(month8);
+							contactRow.appendChild(month9);
+							contactRow.appendChild(month10);
+							contactRow.appendChild(month11);
+							contactRow.appendChild(month12);
+							contactRow.appendChild(year);
+							//contactRow.appendChild(monthset);
+							document.getElementById("contacts4").appendChild(contactRow);
+							
+							//chart 추가
+							function zeroReturn(arg1){
+   											if(arg1==0)
+   											return("");
+											else{
+											var arg3;
+											arg3=Number(arg1);
+											var arg2=arg3.toLocaleString();
+											
+											return(arg2+" "+items.textContent);	
+												}
+											};
+							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
+							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
+							var trace = {
+ 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  									 y: chartY,
+  									type: 'scatter',
+
+ 									 mode: 'lines+markers+text',
+  									name: '',
+  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
+  									textposition: 'right',
+  									textfont: {
+  									  size: 15
+ 									 }
+
+									};
+							chartData.push(trace);
+							   
+
+						}
+						//차트 추가
+						Plotly.newPlot('my-graph4', chartData, layout);
+						chartY.splice(0,chartY.length);
+						chartData.splice(0,chartData.length);
+                        
+
+						var contactRow = document.createElement("tr");
+						var total1 = document.createElement("td");
+						var total2 = document.createElement("td");
+						var total3 = document.createElement("td");
+						var total4 = document.createElement("td");
+						var total5 = document.createElement("td");
+						var total6 = document.createElement("td");
+						var total7 = document.createElement("td");
+						var total8 = document.createElement("td");
+						var total9 = document.createElement("td");
+						var total10 = document.createElement("td");
+						var total11 = document.createElement("td");
+						var total12 = document.createElement("td");
+						var totalYear = document.createElement("td");
+						var temp = document.createElement("td");
+						temp.textContent = "합계";
+						total1.textContent = totalSum1.toLocaleString();
+						total2.textContent = totalSum2.toLocaleString();
+						total3.textContent = totalSum3.toLocaleString();
+						total4.textContent = totalSum4.toLocaleString();
+						total5.textContent = totalSum5.toLocaleString();
+						total6.textContent = totalSum6.toLocaleString();
+						total7.textContent = totalSum7.toLocaleString();
+						total8.textContent = totalSum8.toLocaleString();
+						total9.textContent = totalSum9.toLocaleString();
+						total10.textContent = totalSum10.toLocaleString();
+						total11.textContent = totalSum11.toLocaleString();
+						total12.textContent = totalSum12.toLocaleString();
+						totalYear.textContent = totalSumYear.toLocaleString();
+
+						contactRow.appendChild(temp);
+						contactRow.appendChild(total1);
+						contactRow.appendChild(total2);
+						contactRow.appendChild(total3);
+						contactRow.appendChild(total4);
+						contactRow.appendChild(total5);
+						contactRow.appendChild(total6);
+						contactRow.appendChild(total7);
+						contactRow.appendChild(total8);
+						contactRow.appendChild(total9);
+						contactRow.appendChild(total10);
+						contactRow.appendChild(total11);
+						contactRow.appendChild(total12);
+						contactRow.appendChild(totalYear);
+
+						document.getElementById("contacts4").appendChild(contactRow);
+					});
+				});
+			}
+			OnDateSet();
+			//window.addEventListener("load", listContacts(d.getFullYear()), true);
+			//window.addEventListener("load", listContacts2(d.getFullYear()), true);
+
+			//날짜 변경시 년도별 표시
+			function dateOnchange(data) {
+				var dateset = data;
+				location.href = "./year.html?date=" + escape(dateset);
+			};
+
+		</script>
+	</head>
+	<body>
+		<a href="index.html">초기 화면</a>
+		<a href="year.html">연간 집계</a>
+		<a href="select.html">항목별 검색</a>
+		<a href="item.html">품목 등록</a>
+		<a href="customer.html">거래처 등록</a>
+		<a href="backup.html">DB 백업</a>
+		<div id="container">
+			<section id="input">
+				<h1></h1>
+				<label>
+					<input type="date" id="date" name="date" value="" onchange="dateOnchange(document.getElementById('date').value)" />
+				</label>
+				<label id="week"></label>
+			</section>
+			<section id="output">
+				<h1>품목별 수입 총액</h1>
+				<table id="contacts" border="1" cellspacing="0" style="width:100%">
+					<th>품목</th>
+					<th>1월</th>
+					<th>2월</th>
+					<th>3월</th>
+					<th>4월</th>
+					<th>5월</th>
+					<th>6월</th>
+					<th>7월</th>
+					<th>8월</th>
+					<th>9월</th>
+					<th>10월</th>
+					<th>11월</th>
+					<th>12월</th>
+					<th>함계</th>
+				</table>
+                    <div id="my-graph1"></div>
+				<h1>품목별 지출 총액</h1>
+				<table id="contacts2" border="1" cellspacing="0" style="width:100%">
+					<th>품목</th>
+					<th>1월</th>
+					<th>2월</th>
+					<th>3월</th>
+					<th>4월</th>
+					<th>5월</th>
+					<th>6월</th>
+					<th>7월</th>
+					<th>8월</th>
+					<th>9월</th>
+					<th>10월</th>
+					<th>11월</th>
+					<th>12월</th>
+					<th>함계</th>
+				</table>
+                    <div id="my-graph2"></div>
+                <h1>거래처별 수입 총액</h1>
+				<table id="contacts3" border="1" cellspacing="0" style="width:100%">
+					<th>품목</th>
+					<th>1월</th>
+					<th>2월</th>
+					<th>3월</th>
+					<th>4월</th>
+					<th>5월</th>
+					<th>6월</th>
+					<th>7월</th>
+					<th>8월</th>
+					<th>9월</th>
+					<th>10월</th>
+					<th>11월</th>
+					<th>12월</th>
+					<th>함계</th>
+				</table>
+                    <div id="my-graph3"></div>
+				<h1>거래처별 지출 총액</h1>
+				<table id="contacts4" border="1" cellspacing="0" style="width:100%">
+					<th>품목</th>
+					<th>1월</th>
+					<th>2월</th>
+					<th>3월</th>
+					<th>4월</th>
+					<th>5월</th>
+					<th>6월</th>
+					<th>7월</th>
+					<th>8월</th>
+					<th>9월</th>
+					<th>10월</th>
+					<th>11월</th>
+					<th>12월</th>
+					<th>함계</th>
+				</table>
+				<script>
+					//get 형식 파라매타 가져오기
+
+					var Request = function() {
+						this.getParameter = function(name) {
+							var rtnval = '';
+							var nowAddress = unescape(location.href);
+							var parameters = (nowAddress.slice(nowAddress.indexOf('?') + 1, nowAddress.length)).split('&');
+							for (var i = 0; i < parameters.length; i++) {
+								var varName = parameters[i].split('=')[0];
+								if (varName.toUpperCase() == name.toUpperCase()) {
+									rtnval = parameters[i].split('=')[1];
+									break;
+								}
+							}
+							return rtnval;
+							//    document.write( rtnval );
+						}
+					}
+					var request = new Request();
+					//document.write(request.getParameter("items"));
+
+					if (request.getParameter("date") == "") {
+						var d = new Date();
+						var year = d.getFullYear();
+						window.addEventListener("load", listContacts(year), true);
+						window.addEventListener("load", listContacts2(year), true);
+                        window.addEventListener("load", listContacts3(year), true);
+                        window.addEventListener("load", listContacts4(year), true);
+						document.getElementById("date").value = bdate;
+						//현재날짜
+						
+
+
+
+					} else {
+						var year = request.getParameter("date").split('-');
+						window.addEventListener("load", listContacts(year[0]), true);
+						window.addEventListener("load", listContacts2(year[0]), true);
+                        window.addEventListener("load", listContacts3(year[0]), true);
+                        window.addEventListener("load", listContacts4(year[0]), true);
+						document.getElementById("date").value = request.getParameter("date");
+						//변경된 날짜 표시
+
+
+					};
+				</script>
+			</section>
+
+		</div>
+	
+		<!--<div id="my-graph" style="width:600px;height:250px;"></div>-->
+		  <div id="my-graph4"></div>
+
+	<script>
+function chartTrace(){
+
+};
+var trace1 = {
+  x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  y: [10, 15, 13, 17],
+  type: 'scatter',
+
+  mode: 'lines+markers+text',
+  name: 'Lines, Markers and Text',
+  text: ['Text A', 'Text B', 'Text C'],
+  textposition: 'top right',
+  textfont: {
+    size: 15
+  }
+
+};
+
+var trace2 = {
+  x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+  y: [16, 5, 11, 9],
+  type: 'scatter'
+};
+
+var data = [trace1];
+data.push(trace2);
+
+var layout = {
+  showlegend: false,
+  //title: 'Title of the Graph',
+  xaxis: {	
+    range: [1, 12],
+    title: '월별',
+    //autotick: false,
+    //ticks: 'outside',
+    //tick0: 0,
+    dtick: 1,
+    //ticklen: 8,
+    //tickwidth: 4,
+    //tickcolor: '#000'
+  },
+  yaxis: {
+    title: '금액'
+  }
+  };
+
+//Plotly.newPlot('my-graph', data, layout);
+	</script>
+
+	</body>
+</html>

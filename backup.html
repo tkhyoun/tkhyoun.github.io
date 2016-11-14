@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<head>
+	<title>cvs 엑셀파일 디비 등록</title>
+	<meta charset="utf-8" />
+</head>
+<script>
+	//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
+	var db = openDatabase('account', '2.0', 'my account', 1 * 1024 * 1024);
+
+	//Initialize the database 날짜 시간,품명,수입,지출,고객,기타
+	db.transaction(function(tx) {
+		tx.executeSql("CREATE TABLE IF NOT EXISTS account(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
+	});
+
+	function addContact(inputDate, inputItemsName, inputIncomeName, inputOutlayNumber, inputCustomerName, inputEtcName) {
+		db.transaction(function(tx) {
+			tx.executeSql("INSERT INTO account(date,items,income,outlay,customer,etc) VALUES (?,?,?,?,?,?)", [inputDate, inputItemsName, inputIncomeName, inputOutlayNumber, inputCustomerName, inputEtcName], function(tx, results) {
+
+			});
+		});
+	}
+
+	function readFile() {
+		var file = document.getElementById("file").files[0];
+
+		document.getElementById("fileName").textContent = file.name;
+		document.getElementById("fileSize").textContent = "(" + file.size + "byte)";
+
+		var reader = new FileReader();
+
+		reader.onload = function() {
+			var display = document.getElementById("content");
+			/*
+			 var splittxt;
+			 splittxt = reader.result.split("\n");
+			 var splittxt2 = splittxt[0].split(",");
+			 //display.textContent += splittxt2[1]+"T12:00:00"+splittxt2[2]+splittxt2[3]+splittxt2[4]+splittxt2[6].substring(0,2)+splittxt2[5];
+
+			 var splittxt2 = "";
+			 var date = "";
+			 var items = "";
+			 var income = "";
+			 var outlay = "";
+			 var customer = "";
+			 var etc = "";
+			 for (var i = 0; i < splittxt.length; i++) {
+			 splittxt2 = splittxt[i].split(",");
+			 date = splittxt2[1] + "T12:00:00";
+			 date = date.trim();
+			 items = splittxt2[2].trim();
+			 items = items.replace("뻔", "번");
+			 income = splittxt2[3].trim();
+			 outlay = splittxt2[4].trim();
+			 customer = splittxt2[5].substring(0, 2).trim();
+			 customer = customer.replace("복", "북");
+			 customer = customer.replace("참외", "성주");
+			 etc = splittxt2[6].trim();
+			 display.textContent += splittxt2[1] + "T12:00:00" + splittxt2[2] + splittxt2[3] + splittxt2[4] + splittxt2[5].substring(0, 2) + splittxt2[6];
+			 addContact(date, items, income, outlay, customer, etc);
+
+			 };
+			 */
+			display.textContent = reader.result;
+		};
+
+		reader.onerror = function(evt) {
+			alert(evt.target.error.code);
+		};
+
+		var encodingList = document.getElementById("encoding");
+		var encoding = encodingList.options[encodingList.selectedIndex].value;
+
+		reader.readAsText(file, encoding);
+
+	};
+
+	function dbUpdate() {
+
+		var splittxt = document.getElementById("content").textContent;
+		splittxt = splittxt.split("\n");
+		var splittxt2 = splittxt[0].split(",");
+		//display.textContent += splittxt2[1]+"T12:00:00"+splittxt2[2]+splittxt2[3]+splittxt2[4]+splittxt2[6].substring(0,2)+splittxt2[5];
+
+		var splittxt2 = "";
+		var date = "";
+		var items = "";
+		var income = "";
+		var outlay = "";
+		var customer = "";
+		var etc = "";
+		for (var i = 0; i < splittxt.length; i++) {
+			splittxt2 = splittxt[i].split(",");
+			date = splittxt2[1]; //+ "T12:00:00"; 삭제부분
+			date = date.trim();
+			items = splittxt2[2].trim();
+			items = items.replace("뻔", "번");
+			income = splittxt2[3].trim();
+			outlay = splittxt2[4].trim();
+			customer = splittxt2[5].substring(0, 2).trim();
+			//customer = splittxt2[6].substring(0, 2).trim();
+			customer = customer.replace("복", "북");
+			customer = customer.replace("참외", "성주");
+			etc = splittxt2[6].trim();
+			//etc = splittxt2[5].trim();
+			//display.textContent += splittxt2[1] + "T12:00:00" + splittxt2[2] + splittxt2[3] + splittxt2[4] + splittxt2[5].substring(0, 2) + splittxt2[6];
+			addContact(date, items, income, outlay, customer, etc);
+
+		};
+	};
+	function saveTextAsFile() {
+		var textToWrite = document.getElementById("content").value;
+		var textFileAsBlob = new Blob([textToWrite], {
+			type : 'text/plain'
+		});
+
+		var downloadLink = document.createElement("a");
+		downloadLink.download = "backup.cvs";
+		downloadLink.innerHTML = "Download File";
+		if (window.webkitURL != null) {
+			// Chrome allows the link to be clicked
+			// without actually adding it to the DOM.
+			downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+		} else {
+			// Firefox requires the link to be added to the DOM
+			// before it can be clicked.
+			downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+			downloadLink.onclick = destroyClickedElement;
+			downloadLink.style.display = "none";
+			document.body.appendChild(downloadLink);
+		}
+
+		downloadLink.click();
+	};
+
+	function loadTextAsFile() {
+		document.getElementById("content").textContent = "";
+		db.transaction(function(tx) {
+			tx.executeSql("SELECT * FROM account", [], function(tx, results) {
+
+				var len = results.rows.length;
+				var i;
+				for ( i = 0; i < len; i++) {
+					//Create the row and its cells
+					//Set values coming from the database
+					document.getElementById("content").textContent += results.rows.item(i).id + ",";
+					document.getElementById("content").textContent += results.rows.item(i).date + ",";
+					document.getElementById("content").textContent += results.rows.item(i).items + ",";
+					document.getElementById("content").textContent += results.rows.item(i).income + ",";
+					document.getElementById("content").textContent += results.rows.item(i).outlay + ",";
+					document.getElementById("content").textContent += results.rows.item(i).customer + ",";
+					document.getElementById("content").textContent += results.rows.item(i).etc + "\n";
+
+					//						document.getElementById("incomeTotal").innerHTML="테스트1";
+					//'<%= labelcap.ClientID %>'
+				}
+			});
+		});
+	};
+    			//테이블 삭제
+			function tabledel() {
+                var r=confirm("데이터를 전부 삭제합니다.\n 실행 하시겠습니까?");
+                if (r==true){
+                //승락
+				db.transaction(function(tx) {
+					tx.executeSql('drop table account', [], function() {
+					});
+				});
+			
+         } else {
+                //취소
+                };
+                };
+</script>
+<body>
+	<a href="index.html">초기 화면</a>
+	<a href="year.html">연간 집계</a>
+	<a href="select.html">항목별 검색</a>
+	<a href="item.html">품목 등록</a>
+	<a href="customer.html">거래처 등록</a>
+	<a href="backup.html">DB 백업</a>
+	<div id="container">
+
+		<h1>cvs 엑셀파일 디비 등록</h1>
+		<input id="file" type="file">
+		<select id="encoding">
+			<option>UTF-8</option>
+		</select>
+		<button onclick="readFile()">
+			1.읽기
+		</button>
+		<button onclick="dbUpdate()">
+			2.파일로 가져온 CVS 파일 DB 입력
+		</button>
+		<br/>
+		<button onclick="loadTextAsFile()">
+			1.저장할 DB를 CVS형식으로 불러오기
+		</button>
+		<button onclick="saveTextAsFile()">
+			2.DB 내보내기
+		</button>
+        <button onclick="tabledel()">
+            ***데이터 삭제***
+        </button>
+		<div>
+			<span id="fileName">File Name</span>
+			<span id="fileSize">File Size</span>
+		</div>
+		<textarea id="content" readonly style="width:600px; height:400px;"></textarea>
+</body>
+</html>

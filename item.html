@@ -1,0 +1,226 @@
+﻿<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>품목 등록</title>
+		<style>
+			input[type=datetime-local]::-webkit-inner-spin-button {
+				opacity: 1
+			}
+			input[type=datetime-local]::-webkit-calendar-picker-indicator {
+				opacity: 1
+			}
+		</style>
+		<script>
+			//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
+			var db = openDatabase('account', '2.0', 'my account', 1 * 1024 * 1024);
+
+			//Initialize the database 날짜 시간,품명,수입,지출,고객,기타
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS item(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),name)");
+			});
+
+			function addContact() {
+
+				var inputDate = document.getElementById("date").value;
+				var inputName = document.getElementById("itemName").value;
+
+				db.transaction(function(tx) {
+					tx.executeSql("INSERT INTO item(date,name) VALUES (?,?)", [inputDate, inputName], function(tx, results) {
+
+						//Create the row and its cells
+						var contactRow = document.createElement("tr");
+						// 새로운 tr 엘리먼트를 만들고
+						var id = document.createElement("td");
+						var date = document.createElement("td");
+						var name = document.createElement("td");
+
+						var removeButton = document.createElement("td");
+						var updateButton = document.createElement("td");
+						//Set values coming from the database
+						id.textContent = results.insertId;
+						date.textContent = inputDate;
+						name.textContent = inputName;
+						removeButton.innerHTML = '<button onclick="removeContact(' + results.insertId + ')">삭제</button>';
+						updateButton.innerHTML = '<button onclick="updateContact(' + results.insertId + ')">수정</button>';
+						//Add cells to the row
+						contactRow.setAttribute("id", "c" + results.insertId);
+						//이름이 id 속성값을 뒤에 있는 값으로 교체
+						contactRow.appendChild(id);
+						//.appendChild()는 선택한 요소 안에 자식 요소를 추가합니다.
+						contactRow.appendChild(date);
+						contactRow.appendChild(name);
+						contactRow.appendChild(removeButton);
+						contactRow.appendChild(updateButton);
+						//Add the row to the table
+						document.getElementById("contacts").appendChild(contactRow);
+						//수정 과정에서 다시 불러오기 부분 저장데이터 유지부분 여기서부터 다시 시작
+						//var urlItems = escape(inputItemsName);
+						//location.href = "./index.html?date=" + escape(document.getElementById("date").value) + "&items=" + escape(inputItemsName) + "&income=" + escape(inputIncomeName) + "&outlay=" + escape(inputOutlayNumber) + "&customer=" + escape(inputCustomerName) + "&etc=" + escape(inputEtcName);
+						//  document.getElementById('items').value=inputItemsName;
+					});
+				});
+			}
+
+			//var sql = "UPDATE `" + this.tableName + "` SET " + set.join(", ") + " WHERE id = '" + obj.id + "'";
+			function updateContact(id) {
+
+				var inputDate = document.getElementById("date").value;
+				var inputName = document.getElementById("itemName").value;
+
+				db.transaction(function(tx) {
+					tx.executeSql("UPDATE item SET date='" + inputDate + "',name='" + inputName + "' WHERE id=?", [id], function() {
+						location.reload(true);
+					});
+				});
+			}
+
+			function removeContact(id) {
+				db.transaction(function(tx) {
+					tx.executeSql('DELETE FROM item WHERE id=?', [id], function() {
+						//Dynamically remove the deleted contact from the table
+						var contactTable = document.getElementById("contacts");
+						var contactToDelete = document.getElementById("c" + id);
+						contactTable.removeChild(contactToDelete);
+					});
+				});
+			}
+
+			//테이블 삭제
+			function tabledel() {
+				db.transaction(function(tx) {
+					tx.executeSql('drop table item', [], function() {
+					});
+				});
+			}
+
+			function listContacts() {
+				db.transaction(function(tx) {
+					tx.executeSql("SELECT * FROM item", [], function(tx, results) {
+
+						var len = results.rows.length;
+						var i;
+						for ( i = 0; i < len; i++) {
+							//Create the row and its cells
+							var contactRow = document.createElement("tr");
+							var id = document.createElement("td");
+							var date = document.createElement("td");
+							var name = document.createElement("td");
+							var removeButton = document.createElement("td");
+							var updateButton = document.createElement("td");
+							//Set values coming from the database
+							id.textContent = results.rows.item(i).id;
+							date.textContent = results.rows.item(i).date;
+							name.textContent = results.rows.item(i).name;
+							removeButton.innerHTML = '<button onclick="removeContact(' + results.rows.item(i).id + ')">삭제</button>';
+							updateButton.innerHTML = '<button onclick="updateContact(' + results.rows.item(i).id + ')">수정</button>';
+							//Add cells to the row
+							contactRow.setAttribute("id", "c" + results.rows.item(i).id);
+							contactRow.appendChild(id);
+							contactRow.appendChild(date);
+							contactRow.appendChild(name);
+							contactRow.appendChild(removeButton);
+							contactRow.appendChild(updateButton);
+							//Add the row to the table
+							document.getElementById("contacts").appendChild(contactRow);
+
+							//						document.getElementById("incomeTotal").innerHTML="테스트1";
+							//'<%= labelcap.ClientID %>'
+						}
+					});
+				});
+			}
+
+			function set() {
+				document.getElementById("itemName").value = "옥수수";
+				addContact();
+				document.getElementById("itemName").value = "번데기";
+				addContact();
+				document.getElementById("itemName").value = "땅콩";
+				addContact();
+				document.getElementById("itemName").value = "참외";
+				addContact();
+				document.getElementById("itemName").value = "운송비";
+				addContact();
+			}
+
+
+			window.addEventListener("load", listContacts(), true);
+
+		</script>
+	</head>
+	<body>
+		<a href="index.html">초기 화면</a>
+		<a href="year.html">연간 집계</a>
+		<a href="select.html">항목별 검색</a>
+		<a href="item.html">품목 등록</a>
+		<a href="customer.html">거래처 등록</a>
+		<a href="backup.html">DB 백업</a>
+		<div id="container">
+			<section id="input">
+				<h1></h1>
+				<label>
+					<input type="text" name="date" id="date1" disabled hidden/>
+					<input type="datetime-local" id="date" name="date" value="2013-10-09T15:38:15" onchange="dateOnchange(document.getElementById('date').value)" />
+					<script>
+						var d = new Date();
+						var nowDay = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+						var nowTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+						var week = "요일:" + d.getDay();
+						var weekarr = new Array("일", "월", "화", "수", "목", "금", "토");
+						document.write(weekarr[d.getDay()] + "요일");
+						function utc(date) {
+							if (10 > date) {
+								return "0" + date;
+							} else {
+								return date
+							}
+						};
+
+						//현재 날짜
+						var bdate = d.getFullYear() + "-" + utc((d.getMonth() + 1)) + "-" + utc(d.getDate()) + "T" + utc(d.getHours()) + ":" + utc(d.getMinutes()) + ":" + utc(d.getSeconds());
+						document.getElementById("date").value = bdate;
+					</script> </label>
+				<h1>품명 등록</h1>
+				<label>품명:
+					<input type="text" name="itemName" id="itemName" />
+				</label>
+				<button onclick="addContact()">
+					추가
+				</button>
+				<!--
+				<button onclick="tabledel()">
+				tabledel
+				</button>
+				-->
+				<button onclick="set()">
+					초기설정
+				</button>
+			</section>
+			<!--		<select name='items' id="items"></select> -->
+
+			<section id="output">
+				<h1></h1>
+				<table id="contacts" border="1" cellspacing="0" style="width:100%">
+					<th>번호</th>
+					<th>날짜</th>
+					<th>품명</th>
+					<th>삭제</th>
+					<th>수정</th>
+				</table>
+			</section>
+		</div>
+		<script>
+			function selectAdd(id, value) {
+				var select,
+				    option;
+				select = document.getElementById(id);
+				option = document.createElement('option');
+				option.value = option.text = value;
+				select.add(option);
+				;
+			}
+
+			//selectAdd( 'items','옥수수');
+		</script>
+	</body>
