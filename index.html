@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<!--모바일에서 잘보임-->
 		<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
 		<title>가계부</title>
 		<style>
@@ -371,6 +372,15 @@
 					<button onclick="if(document.getElementById('income').value>10000){document.getElementById('income').value=Number(document.getElementById('income').value)-10000}else{document.getElementById('income').value=0}">
 					-1만원
 					</button>
+					<button onclick="document.getElementById('income').value=Number(document.getElementById('income').value)+1000">
+					+1천원
+					</button>
+					<button onclick="if(document.getElementById('income').value>1000){document.getElementById('income').value=Number(document.getElementById('income').value)-1000}else{document.getElementById('income').value=0}">
+					-1천원
+					</button>
+					<button onclick="getElementById('income').value=0">
+					0
+					</button>
 				</label>
 				<br>
 				<label>지출:
@@ -380,6 +390,15 @@
 					</button>
 					<button onclick="if(document.getElementById('outlay').value>10000){document.getElementById('outlay').value=Number(document.getElementById('outlay').value)-10000}else{document.getElementById('outlay').value=0}">
 					-1만원
+					</button>
+					<button onclick="document.getElementById('outlay').value=Number(document.getElementById('outlay').value)+1000">
+					+1천원
+					</button>
+					<button onclick="if(document.getElementById('outlay').value>1000){document.getElementById('outlay').value=Number(document.getElementById('outlay').value)-1000}else{document.getElementById('outlay').value=0}">
+					-1천원
+					</button>
+					<button onclick="getElementById('outlay').value=0">
+					0
 					</button>
 				</label>
 				<br>
