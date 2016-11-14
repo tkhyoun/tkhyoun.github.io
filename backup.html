@@ -8,28 +8,21 @@
 <script>
 	//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
 	var db = openDatabase('account', '2.0', 'my account', 1 * 1024 * 1024);
-
 	//Initialize the database 날짜 시간,품명,수입,지출,고객,기타
 	db.transaction(function(tx) {
 		tx.executeSql("CREATE TABLE IF NOT EXISTS account(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
 	});
-
 	function addContact(inputDate, inputItemsName, inputIncomeName, inputOutlayNumber, inputCustomerName, inputEtcName) {
 		db.transaction(function(tx) {
 			tx.executeSql("INSERT INTO account(date,items,income,outlay,customer,etc) VALUES (?,?,?,?,?,?)", [inputDate, inputItemsName, inputIncomeName, inputOutlayNumber, inputCustomerName, inputEtcName], function(tx, results) {
-
 			});
 		});
 	}
-
 	function readFile() {
 		var file = document.getElementById("file").files[0];
-
 		document.getElementById("fileName").textContent = file.name;
 		document.getElementById("fileSize").textContent = "(" + file.size + "byte)";
-
 		var reader = new FileReader();
-
 		reader.onload = function() {
 			var display = document.getElementById("content");
 			/*
@@ -37,7 +30,6 @@
 			 splittxt = reader.result.split("\n");
 			 var splittxt2 = splittxt[0].split(",");
 			 //display.textContent += splittxt2[1]+"T12:00:00"+splittxt2[2]+splittxt2[3]+splittxt2[4]+splittxt2[6].substring(0,2)+splittxt2[5];
-
 			 var splittxt2 = "";
 			 var date = "";
 			 var items = "";
@@ -59,30 +51,22 @@
 			 etc = splittxt2[6].trim();
 			 display.textContent += splittxt2[1] + "T12:00:00" + splittxt2[2] + splittxt2[3] + splittxt2[4] + splittxt2[5].substring(0, 2) + splittxt2[6];
 			 addContact(date, items, income, outlay, customer, etc);
-
 			 };
 			 */
 			display.textContent = reader.result;
 		};
-
 		reader.onerror = function(evt) {
 			alert(evt.target.error.code);
 		};
-
 		var encodingList = document.getElementById("encoding");
 		var encoding = encodingList.options[encodingList.selectedIndex].value;
-
 		reader.readAsText(file, encoding);
-
 	};
-
 	function dbUpdate() {
-
 		var splittxt = document.getElementById("content").textContent;
 		splittxt = splittxt.split("\n");
 		var splittxt2 = splittxt[0].split(",");
 		//display.textContent += splittxt2[1]+"T12:00:00"+splittxt2[2]+splittxt2[3]+splittxt2[4]+splittxt2[6].substring(0,2)+splittxt2[5];
-
 		var splittxt2 = "";
 		var date = "";
 		var items = "";
@@ -90,6 +74,7 @@
 		var outlay = "";
 		var customer = "";
 		var etc = "";
+        document.getElementById("fileName").textContent = '데이타 저장 중입니다... 다른 페이지로 이동 하지 마세요! 하드 디스크 불이 끄지면 이동하세요!';
 		for (var i = 0; i < splittxt.length; i++) {
 			splittxt2 = splittxt[i].split(",");
 			date = splittxt2[1]; //+ "T12:00:00"; 삭제부분
@@ -106,15 +91,17 @@
 			//etc = splittxt2[5].trim();
 			//display.textContent += splittxt2[1] + "T12:00:00" + splittxt2[2] + splittxt2[3] + splittxt2[4] + splittxt2[5].substring(0, 2) + splittxt2[6];
 			addContact(date, items, income, outlay, customer, etc);
-
+            //if(i==splittxt.length-10){
+            //    document.getElementById("fileName").textContent = '저장 완료!';
+            //};
 		};
+        
 	};
 	function saveTextAsFile() {
 		var textToWrite = document.getElementById("content").value;
 		var textFileAsBlob = new Blob([textToWrite], {
 			type : 'text/plain'
 		});
-
 		var downloadLink = document.createElement("a");
 		downloadLink.download = "backup.cvs";
 		downloadLink.innerHTML = "Download File";
@@ -130,15 +117,12 @@
 			downloadLink.style.display = "none";
 			document.body.appendChild(downloadLink);
 		}
-
 		downloadLink.click();
 	};
-
 	function loadTextAsFile() {
 		document.getElementById("content").textContent = "";
 		db.transaction(function(tx) {
 			tx.executeSql("SELECT * FROM account", [], function(tx, results) {
-
 				var len = results.rows.length;
 				var i;
 				for ( i = 0; i < len; i++) {
@@ -151,7 +135,6 @@
 					document.getElementById("content").textContent += results.rows.item(i).outlay + ",";
 					document.getElementById("content").textContent += results.rows.item(i).customer + ",";
 					document.getElementById("content").textContent += results.rows.item(i).etc + "\n";
-
 					//						document.getElementById("incomeTotal").innerHTML="테스트1";
 					//'<%= labelcap.ClientID %>'
 				}
@@ -188,14 +171,14 @@
 			<option>UTF-8</option>
 		</select>
 		<button onclick="readFile()">
-			1.읽기
+			1.선택된 파일 불러오기
 		</button>
 		<button onclick="dbUpdate()">
 			2.파일로 가져온 CVS 파일 DB 입력
 		</button>
 		<br/>
 		<button onclick="loadTextAsFile()">
-			1.저장할 DB를 CVS형식으로 불러오기
+			1. DB 불러오기
 		</button>
 		<button onclick="saveTextAsFile()">
 			2.DB 내보내기

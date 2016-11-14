@@ -820,7 +820,7 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>함계</th>
+					<th>합계</th>
 				</table>
                     <div id="my-graph1"></div>
 				<h1>품목별 지출 총액</h1>
@@ -838,7 +838,7 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>함계</th>
+					<th>합계</th>
 				</table>
                     <div id="my-graph2"></div>
                 <h1>거래처별 수입 총액</h1>
@@ -856,7 +856,7 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>함계</th>
+					<th>합계</th>
 				</table>
                     <div id="my-graph3"></div>
 				<h1>거래처별 지출 총액</h1>
@@ -874,7 +874,7 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>함계</th>
+					<th>합계</th>
 				</table>
 				<script>
 					//get 형식 파라매타 가져오기
@@ -973,6 +973,10 @@ var layout = {
     //tickcolor: '#000'
   },
   yaxis: {
+      tickformat: "04,2f",
+    type: 'scatter',
+    autorange: true,
+    autotick: true,
     title: '금액'
   }
   };

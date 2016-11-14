@@ -4,7 +4,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 		<!--모바일에서 잘보임-->
 		<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
-		<title>가계부</title>
+		<title>계산기</title>
 		<style>
 			input[type=number]::-webkit-inner-spin-button {
 				opacity: 1
@@ -128,22 +128,37 @@
 				var inputCustomerName = text2;
 				var inputEtcName = document.getElementById("etc").value;
 
+				if (confirm("정말 수정하시겠습니까??") == true){    //확인
 				db.transaction(function(tx) {
 					tx.executeSql("UPDATE account SET date='" + inputDate + "',items='" + inputItemsName + "',income='" + inputIncomeName + "',outlay='" + inputOutlayNumber + "',customer='" + inputCustomerName + "',etc='" + inputEtcName + "' WHERE id=?", [id], function() {
 						location.reload(true);
 					});
 				});
+
+				}else{   //취소
+ 					return;
+					}
 			}
 
 			function removeContact(id) {
+				
+				if (confirm("정말 삭제하시겠습니까??") == true){    //확인
+    					
 				db.transaction(function(tx) {
-					tx.executeSql('DELETE FROM account WHERE id=?', [id], function() {
+					
+				tx.executeSql('DELETE FROM account WHERE id=?', [id], function() {
 						//Dynamically remove the deleted contact from the table
 						var contactTable = document.getElementById("contacts");
 						var contactToDelete = document.getElementById("c" + id);
 						contactTable.removeChild(contactToDelete);
 					});
+
 				});
+
+
+				}else{   //취소
+ 					return;
+					}
 			}
 
 			//테이블 삭제
@@ -365,7 +380,8 @@
 				</label>
 				<br>
 				<label>수입:
-					<input id="income" type="number" min="0" max="3001000" step="1000" value ="" pattern="[0-9]*"/>
+					<input id="income" type="number" min="0" max="3001000" step="1000" value ="" pattern="[0-9]*"/>					
+					<br>
 					<button onclick="document.getElementById('income').value=Number(document.getElementById('income').value)+10000">
 					+1만원
 					</button>
@@ -385,6 +401,7 @@
 				<br>
 				<label>지출:
 					<input id="outlay" type="number"  min="0" max="3001000" step="1000" value="" pattern="[0-9]*"/>
+					<br>
 					<button onclick="document.getElementById('outlay').value=Number(document.getElementById('outlay').value)+10000">
 					+1만원
 					</button>
