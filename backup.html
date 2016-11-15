@@ -165,7 +165,9 @@
 	<a href="backup.html">DB 백업</a>
 	<div id="container">
 
-		<h1>cvs 엑셀파일 디비 등록</h1>
+		<h1>cvs 엑셀파일 저장 및 데이타 불러오기</h1>
+        <br> 엑셀형 파일일 불러와서 데이타 베이스에 저장을 합니다.
+        <br>
 		<input id="file" type="file">
 		<select id="encoding">
 			<option>UTF-8</option>
@@ -176,7 +178,9 @@
 		<button onclick="dbUpdate()">
 			2.파일로 가져온 CVS 파일 DB 입력
 		</button>
-		<br/>
+		<br/><br>
+        데이타를 파일 형식으로 저장을 합니다.
+        <br>
 		<button onclick="loadTextAsFile()">
 			1. DB 불러오기
 		</button>
@@ -190,6 +194,11 @@
 			<span id="fileName">File Name</span>
 			<span id="fileSize">File Size</span>
 		</div>
+        <br>
+        처음 사용자는 품명과 거래처 등록후 사용하십시요.
+        <br>
 		<textarea id="content" readonly style="width:600px; height:400px;"></textarea>
+
+        
 </body>
 </html>

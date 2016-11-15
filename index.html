@@ -246,6 +246,9 @@
 						    option;
 						select = document.getElementById('items');
 						var len = results.rows.length;
+						//선택 아이템 초기 기타 값만 있으면 실행안함
+						if(len>0){
+							document.getElementById('items').options[0] = null;
 						var i;
 						for ( i = 0; i < len; i++) {
 							//Create the row and its cells
@@ -253,7 +256,9 @@
 							option = document.createElement('option');
 							option.value = option.text = results.rows.item(i).name;
 							select.add(option);
+							}
 						}
+
 					});
 				});
 			}
@@ -265,6 +270,9 @@
 						    option;
 						select = document.getElementById('customer');
 						var len = results.rows.length;
+						//선택 아이템 초기 기타 값만 있으면 실행안함
+						if(len>0){
+							document.getElementById('customer').options[0] = null;
 						var i;
 						for ( i = 0; i < len; i++) {
 							//Create the row and its cells
@@ -275,6 +283,7 @@
 								option.selected = true;
 							};
 							select.add(option);
+							}
 						}
 					});
 				});
@@ -366,7 +375,7 @@
 						};
 					</script> 
 				</label>
-				<br>
+				<span style="line-height:30px;"><br></span>
 				<label>품목:
 					<select name='items' id="items">
 						<!--
@@ -376,12 +385,13 @@
 						<option value='참외'>참외</option>
 						<option value='운송비'>운송비</option>
 						-->
+						<option value='기타'>기타</option>
 					</select> 
 				</label>
-				<br>
+				<span style="line-height:30px;"><br></span>
 				<label>수입:
 					<input id="income" type="number" min="0" max="3001000" step="1000" value ="" pattern="[0-9]*"/>					
-					<br>
+					<span style="line-height:35px;"><br></span>
 					<button onclick="document.getElementById('income').value=Number(document.getElementById('income').value)+10000">
 					+1만원
 					</button>
@@ -398,10 +408,10 @@
 					0
 					</button>
 				</label>
-				<br>
+				<span style="line-height:30px;"><br></span>
 				<label>지출:
 					<input id="outlay" type="number"  min="0" max="3001000" step="1000" value="" pattern="[0-9]*"/>
-					<br>
+					<span style="line-height:35px;"><br></span>
 					<button onclick="document.getElementById('outlay').value=Number(document.getElementById('outlay').value)+10000">
 					+1만원
 					</button>
@@ -418,7 +428,7 @@
 					0
 					</button>
 				</label>
-				<br>
+				<span style="line-height:30px;"><br></span>
 				<label>고객:
 					<select name='customer' id="customer">
 						<!--
@@ -427,14 +437,15 @@
 						<option value='대구'>대구</option>
 						<option value='성주'>성주</option>
 						-->
+						<option value='기타'>기타</option>
 					</select> 
 				</label>
-				<br>
+				<span style="line-height:30px;"><br></span>
 				<label>기타:
 					<input type="text" name="etc" id="etc" />
 				</label>
-				<button onclick="addContact()">
-					추가
+				<button onclick="addContact()" style="WIDTH: 50pt; HEIGHT: 30pt">
+					추 가
 				</button>
 		<!--
 				<button onclick="tabledel()">
