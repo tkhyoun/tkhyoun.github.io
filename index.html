@@ -16,6 +16,18 @@
 			input[type=datetime-local]::-webkit-calendar-picker-indicator {
 				opacity: 1
 			}
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, serif;
+    font-size: 1em;
+    line-height: 1.5;
+    color: #6d6d6d;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
+    background: #e7e7e7 url() 0 0 repeat;
+}
+h1 {
+    font-size: 1em;
+    font-weight: bold;
+}
 		</style>
 		<script>
 			//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
@@ -315,7 +327,8 @@
 		</script>
 	</head>
 	<body>
-		<a href="index.html">초기 화면</a>
+
+		<h1><a href="index.html">초기 화면</a>
 		<a href="year.html">연간 집계</a>
 		<a href="select.html">항목별 검색</a>
 		<a href="item.html">품목 등록</a>
@@ -454,7 +467,7 @@
 		-->
 
 			</section>
-
+</h1>
 			<section id="outTotal">
 				<h1></h1>
 				<label id=countTotal></label>
@@ -477,6 +490,7 @@
 				</table>
 			</section>
 		</div>
+		
 		<script>
 			if (request.getParameter("items") == "") {
 				document.getElementById("items").selectedIndex = "0";
