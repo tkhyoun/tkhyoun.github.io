@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -16,18 +16,20 @@
 			input[type=datetime-local]::-webkit-calendar-picker-indicator {
 				opacity: 1
 			}
+           
 body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, serif;
-    font-size: 1em;
+    /*font-family: 'Helvetica Neue', Helvetica, Arial, serif;*/
+   font-size: 12pt;
     line-height: 1.5;
     color: #6d6d6d;
     text-shadow: 0 1px 0 rgba(255, 255, 255, 0.8);
     background: #e7e7e7 url() 0 0 repeat;
 }
-h1 {
-    font-size: 1em;
-    font-weight: bold;
-}
+            .listview{
+                font-size: 10pt;
+                line-height: 1.3;
+            }
+            
 		</style>
 		<script>
 			//Open or create the database 데이타베이스 이름,버전,소개,싸이즈 2메가
@@ -328,7 +330,8 @@ h1 {
 	</head>
 	<body>
 
-		<h1><a href="index.html">초기 화면</a>
+
+        <a href="index.html">초기 화면</a>
 		<a href="year.html">연간 집계</a>
 		<a href="select.html">항목별 검색</a>
 		<a href="item.html">품목 등록</a>
@@ -388,8 +391,12 @@ h1 {
 						};
 					</script> 
 				</label>
-				<span style="line-height:30px;"><br></span>
-				<label>품목:
+                <table>
+                    <tr>
+                        <td>
+ 				<label>품목:</label>                           
+                        </td>
+                        <td>
 					<select name='items' id="items">
 						<!--
 						<option value='옥수수' selected>옥수수</option>
@@ -399,51 +406,71 @@ h1 {
 						<option value='운송비'>운송비</option>
 						-->
 						<option value='기타'>기타</option>
-					</select> 
-				</label>
-				<span style="line-height:30px;"><br></span>
-				<label>수입:
+					</select>                         
+                        </td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                        <label>수입:</label>
+                        </td>
+                        <td>
 					<input id="income" type="number" min="0" max="3001000" step="1000" value ="" pattern="[0-9]*"/>					
-					<span style="line-height:35px;"><br></span>
+                       
+                        </td>
+                        <td>
 					<button onclick="document.getElementById('income').value=Number(document.getElementById('income').value)+10000">
 					+1만원
 					</button>
 					<button onclick="if(document.getElementById('income').value>10000){document.getElementById('income').value=Number(document.getElementById('income').value)-10000}else{document.getElementById('income').value=0}">
 					-1만원
 					</button>
+                    <span style="line-height:30px;"><br></span>
 					<button onclick="document.getElementById('income').value=Number(document.getElementById('income').value)+1000">
 					+1천원
 					</button>
 					<button onclick="if(document.getElementById('income').value>1000){document.getElementById('income').value=Number(document.getElementById('income').value)-1000}else{document.getElementById('income').value=0}">
 					-1천원
 					</button>
-					<button onclick="getElementById('income').value=0">
+					<button onclick="getElementById('income').value=0" style="WIDTH: 35pt;">
 					0
-					</button>
-				</label>
-				<span style="line-height:30px;"><br></span>
-				<label>지출:
-					<input id="outlay" type="number"  min="0" max="3001000" step="1000" value="" pattern="[0-9]*"/>
-					<span style="line-height:35px;"><br></span>
-					<button onclick="document.getElementById('outlay').value=Number(document.getElementById('outlay').value)+10000">
+					</button>                         
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label>지출:</label>                       
+                        </td>
+                        <td>
+                            <input id="outlay" type="number"  min="0" max="3001000" step="1000" value="" pattern="[0-9]*"/>
+                        </td>
+                        <td>
+                    <button onclick="document.getElementById('outlay').value=Number(document.getElementById('outlay').value)+10000">
 					+1만원
 					</button>
 					<button onclick="if(document.getElementById('outlay').value>10000){document.getElementById('outlay').value=Number(document.getElementById('outlay').value)-10000}else{document.getElementById('outlay').value=0}">
 					-1만원
 					</button>
+                            <span style="line-height:35px;"><br></span>
 					<button onclick="document.getElementById('outlay').value=Number(document.getElementById('outlay').value)+1000">
 					+1천원
 					</button>
 					<button onclick="if(document.getElementById('outlay').value>1000){document.getElementById('outlay').value=Number(document.getElementById('outlay').value)-1000}else{document.getElementById('outlay').value=0}">
 					-1천원
 					</button>
-					<button onclick="getElementById('outlay').value=0">
+					<button onclick="getElementById('outlay').value=0" style="WIDTH: 35pt;">
 					0
 					</button>
-				</label>
-				<span style="line-height:30px;"><br></span>
-				<label>고객:
-					<select name='customer' id="customer">
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                        <label>고객:</label>
+                        </td>
+                        <td>
+    					<select name='customer' id="customer">
 						<!--
 						<option value='충북' selected>충북</option>
 						<option value='한양'>한양</option>
@@ -451,15 +478,26 @@ h1 {
 						<option value='성주'>성주</option>
 						-->
 						<option value='기타'>기타</option>
-					</select> 
-				</label>
-				<span style="line-height:30px;"><br></span>
-				<label>기타:
-					<input type="text" name="etc" id="etc" />
-				</label>
-				<button onclick="addContact()" style="WIDTH: 50pt; HEIGHT: 30pt">
-					추 가
-				</button>
+					   </select>                     
+                        </td>
+                        <td></td>
+
+                    </tr>
+                    <tr>
+                        <td>
+                        <label>기타:</label>
+                        </td>
+                        <td colspan="2">
+                        <input type="text" name="etc" id="etc" />
+				        <button onclick="addContact()" style="WIDTH: 50pt; HEIGHT: 30pt">
+					   추 가
+				        </button> 
+                        </td>
+ 
+                    </tr>
+                </table>
+					
+
 		<!--
 				<button onclick="tabledel()">
 					tabledel
@@ -467,7 +505,7 @@ h1 {
 		-->
 
 			</section>
-</h1>
+
 			<section id="outTotal">
 				<h1></h1>
 				<label id=countTotal></label>
@@ -476,8 +514,7 @@ h1 {
 				<label id=sumTotal></label>
 			</section>
 			<section id="output">
-				<h1></h1>
-				<table id="contacts" border="1" cellspacing="0" style="width:100%">
+				<table id="contacts" border="1" cellspacing="0" style="width:100%" class="listview">
 					<th>번호</th>
 					<th>날짜</th>
 					<th>품목</th>
@@ -489,7 +526,7 @@ h1 {
 					<th>수정</th>
 				</table>
 			</section>
-		</div>
+</div>
 		
 		<script>
 			if (request.getParameter("items") == "") {
