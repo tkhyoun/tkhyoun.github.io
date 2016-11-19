@@ -1,3 +1,6 @@
 # tkhyoun.github.io
-litelql + javascript
+SqlLite + javascript
+<br>
+HTML5
+<br>
 다목적 계산기
