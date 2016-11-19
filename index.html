@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -256,6 +256,7 @@ body {
 			function selectItemAdd() {
 				db.transaction(function(tx) {
 					tx.executeSql("SELECT * FROM item", [], function(tx, results) {
+						
 						var select,
 						    option;
 						select = document.getElementById('items');
@@ -272,6 +273,9 @@ body {
 							select.add(option);
 							}
 						}
+							option = document.createElement('option');
+							option.value = option.text = "기타";
+							select.add(option);
 
 					});
 				});
@@ -299,6 +303,10 @@ body {
 							select.add(option);
 							}
 						}
+
+							option = document.createElement('option');
+							option.value = option.text = "기타";
+							select.add(option);
 					});
 				});
 			}
@@ -404,8 +412,9 @@ body {
 						<option value='번데기'>번데기</option>
 						<option value='참외'>참외</option>
 						<option value='운송비'>운송비</option>
-						-->
 						<option value='기타'>기타</option>
+						-->
+						
 					</select>                         
                         </td>
                         <td></td>
@@ -476,8 +485,9 @@ body {
 						<option value='한양'>한양</option>
 						<option value='대구'>대구</option>
 						<option value='성주'>성주</option>
-						-->
 						<option value='기타'>기타</option>
+						-->
+						
 					   </select>                     
                         </td>
                         <td></td>
