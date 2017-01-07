@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -184,8 +184,9 @@ body {
 			}
 
 			function listContacts(year) {
+				var startyear="2000";
 				db.transaction(function(tx) {
-					tx.executeSql("SELECT * FROM calendar where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "' order by id desc", [], function(tx, results) {
+					tx.executeSql("SELECT * FROM calendar where date >= '" + startyear + "-01-01" + "' AND date < '" + year + "-12-32" + "' order by id desc", [], function(tx, results) {
 
 						var len = results.rows.length;
 						var i;
