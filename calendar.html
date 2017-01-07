@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -37,7 +37,7 @@ body {
 
 			//Initialize the database 날짜 시간,품명,수입,지출,고객,기타
 			db.transaction(function(tx) {
-				tx.executeSql("CREATE TABLE IF NOT EXISTS account(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
+				tx.executeSql("CREATE TABLE IF NOT EXISTS calendar(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
 			});
 
 			function addContact() {
@@ -67,17 +67,17 @@ body {
 				var inputEtcName = document.getElementById("etc").value;
 
 				db.transaction(function(tx) {
-					tx.executeSql("INSERT INTO account(date,items,income,outlay,customer,etc) VALUES (?,?,?,?,?,?)", [inputDate, inputItemsName, inputIncomeName, inputOutlayNumber, inputCustomerName, inputEtcName], function(tx, results) {
+					tx.executeSql("INSERT INTO calendar(date,items,income,outlay,customer,etc) VALUES (?,?,?,?,?,?)", [inputDate, inputItemsName, inputIncomeName, inputOutlayNumber, inputCustomerName, inputEtcName], function(tx, results) {
 
 						//Create the row and its cells
 						var contactRow = document.createElement("tr");
 						// 새로운 tr 엘리먼트를 만들고
 						var id = document.createElement("td");
 						var date = document.createElement("td");
-						var items = document.createElement("td");
+						//var items = document.createElement("td");
 						var income = document.createElement("td");
 						var outlay = document.createElement("td");
-						var customer = document.createElement("td");
+						//var customer = document.createElement("td");
 						var etc = document.createElement("td");
 
 						var removeButton = document.createElement("td");
@@ -85,10 +85,10 @@ body {
 						//Set values coming from the database
 						id.textContent = results.insertId;
 						date.textContent = inputDate;
-						items.textContent = inputItemsName;
+						//items.textContent = inputItemsName;
 						income.textContent = inputIncomeName;
 						outlay.textContent = inputOutlayNumber;
-						customer.textContent = inputCustomerName;
+						//customer.textContent = inputCustomerName;
 						etc.textContent = inputEtcName;
 						removeButton.innerHTML = '<button onclick="removeContact(' + results.insertId + ')">삭제</button>';
 						updateButton.innerHTML = '<button onclick="updateContact(' + results.insertId + ')">수정</button>';
@@ -98,10 +98,10 @@ body {
 						contactRow.appendChild(id);
 						//.appendChild()는 선택한 요소 안에 자식 요소를 추가합니다.
 						contactRow.appendChild(date);
-						contactRow.appendChild(items);
+						//contactRow.appendChild(items);
 						contactRow.appendChild(income);
 						contactRow.appendChild(outlay);
-						contactRow.appendChild(customer);
+						//contactRow.appendChild(customer);
 						contactRow.appendChild(etc);
 						contactRow.appendChild(removeButton);
 						contactRow.appendChild(updateButton);
@@ -109,7 +109,7 @@ body {
 						document.getElementById("contacts").appendChild(contactRow);
 						//수정 과정에서 다시 불러오기 부분 저장데이터 유지부분 여기서부터 다시 시작
 						//var urlItems = escape(inputItemsName);
-						location.href = "./index.html?date=" + escape(document.getElementById("date").value) + "&items=" + escape(inputItemsName) + "&income=" + escape(inputIncomeName) + "&outlay=" + escape(inputOutlayNumber) + "&customer=" + escape(inputCustomerName) + "&etc=" + escape(inputEtcName);
+						location.href = "./calendar.html?date=" + escape(document.getElementById("date").value) + "&items=" + escape(inputItemsName) + "&income=" + escape(inputIncomeName) + "&outlay=" + escape(inputOutlayNumber) + "&customer=" + escape(inputCustomerName) + "&etc=" + escape(inputEtcName);
 						//  document.getElementById('items').value=inputItemsName;
 					});
 				});
@@ -144,7 +144,7 @@ body {
 
 				if (confirm("정말 수정하시겠습니까??") == true){    //확인
 				db.transaction(function(tx) {
-					tx.executeSql("UPDATE account SET date='" + inputDate + "',items='" + inputItemsName + "',income='" + inputIncomeName + "',outlay='" + inputOutlayNumber + "',customer='" + inputCustomerName + "',etc='" + inputEtcName + "' WHERE id=?", [id], function() {
+					tx.executeSql("UPDATE calendar SET date='" + inputDate + "',items='" + inputItemsName + "',income='" + inputIncomeName + "',outlay='" + inputOutlayNumber + "',customer='" + inputCustomerName + "',etc='" + inputEtcName + "' WHERE id=?", [id], function() {
 						location.reload(true);
 					});
 				});
@@ -160,7 +160,7 @@ body {
     					
 				db.transaction(function(tx) {
 					
-				tx.executeSql('DELETE FROM account WHERE id=?', [id], function() {
+				tx.executeSql('DELETE FROM calendar WHERE id=?', [id], function() {
 						//Dynamically remove the deleted contact from the table
 						var contactTable = document.getElementById("contacts");
 						var contactToDelete = document.getElementById("c" + id);
@@ -178,14 +178,14 @@ body {
 			//테이블 삭제
 			function tabledel() {
 				db.transaction(function(tx) {
-					tx.executeSql('drop table account', [], function() {
+					tx.executeSql('drop table calendar', [], function() {
 					});
 				});
 			}
 
 			function listContacts(year) {
 				db.transaction(function(tx) {
-					tx.executeSql("SELECT * FROM account where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "' order by id desc", [], function(tx, results) {
+					tx.executeSql("SELECT * FROM calendar where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "' order by id desc", [], function(tx, results) {
 
 						var len = results.rows.length;
 						var i;
@@ -194,20 +194,20 @@ body {
 							var contactRow = document.createElement("tr");
 							var id = document.createElement("td");
 							var date = document.createElement("td");
-							var items = document.createElement("td");
+							//var items = document.createElement("td");
 							var income = document.createElement("td");
 							var outlay = document.createElement("td");
-							var customer = document.createElement("td");
+							//var customer = document.createElement("td");
 							var etc = document.createElement("td");
 							var removeButton = document.createElement("td");
 							var updateButton = document.createElement("td");
 							//Set values coming from the database
 							id.textContent = results.rows.item(i).id;
 							date.textContent = results.rows.item(i).date;
-							items.textContent = results.rows.item(i).items;
+							//items.textContent = results.rows.item(i).items;
 							income.textContent = results.rows.item(i).income;
 							outlay.textContent = results.rows.item(i).outlay;
-							customer.textContent = results.rows.item(i).customer;
+							//customer.textContent = results.rows.item(i).customer;
 							etc.textContent = results.rows.item(i).etc;
 							removeButton.innerHTML = '<button onclick="removeContact(' + results.rows.item(i).id + ')">삭제</button>';
 							updateButton.innerHTML = '<button onclick="updateContact(' + results.rows.item(i).id + ')">수정</button>';
@@ -215,10 +215,10 @@ body {
 							contactRow.setAttribute("id", "c" + results.rows.item(i).id);
 							contactRow.appendChild(id);
 							contactRow.appendChild(date);
-							contactRow.appendChild(items);
+							//contactRow.appendChild(items);
 							contactRow.appendChild(income);
 							contactRow.appendChild(outlay);
-							contactRow.appendChild(customer);
+							//contactRow.appendChild(customer);
 							contactRow.appendChild(etc);
 							contactRow.appendChild(removeButton);
 							contactRow.appendChild(updateButton);
@@ -231,7 +231,7 @@ body {
 					});
 				});
 				db.transaction(function(tx) {
-					tx.executeSql("SELECT count(*)as 총수 FROM account where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
+					tx.executeSql("SELECT count(*)as 총수 FROM calendar where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
 						//var len = results.rows.length;
 						document.getElementById("countTotal").innerHTML = "거래항목수  : " + results.rows.item(0).총수;
 					});
@@ -239,13 +239,13 @@ body {
 				var incometotal;
 				//총합계 계산용 변수
 				db.transaction(function(tx) {
-					tx.executeSql("SELECT sum(income)as 수입총액 FROM account where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
+					tx.executeSql("SELECT sum(income)as 수입총액 FROM calendar where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
 						document.getElementById("incomeTotal").innerHTML = "수입 총액  : " + results.rows.item(0).수입총액.toLocaleString() + "원 ";
 						incometotal = results.rows.item(0).수입총액;
 					});
 				});
 				db.transaction(function(tx) {
-					tx.executeSql("SELECT sum(outlay)as 지출총액 FROM account where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
+					tx.executeSql("SELECT sum(outlay)as 지출총액 FROM calendar where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
 						document.getElementById("outlayTotal").innerHTML = "지출 총액  : " + results.rows.item(0).지출총액.toLocaleString() + "원 ";
 						var sum = incometotal + results.rows.item(0).지출총액;
 						document.getElementById("sumTotal").innerHTML = "총합계  : " + sum.toLocaleString() + "원 ";
@@ -345,7 +345,7 @@ body {
 		<a href="item.html">품목 등록</a>
 		<a href="customer.html">거래처 등록</a>
 		<a href="backup.html">DB 백업</a>
-		<a href="calendar.html">세부 일정</a>
+        <a href="calendar.html">세부 일정</a>
 		<div id="container">
 			<section id="input">
 				<h1></h1>
@@ -374,7 +374,7 @@ body {
 						//날짜 변경시 년도별 표시
 						function dateOnchange(data) {
 							var dateset = data;
-							location.href = "./index.html?date=" + escape(dateset);
+							location.href = "./calendar.html?date=" + escape(dateset);
 						};
 						//get 형식 데이타 확인
 						if (request.getParameter("date") == "") {
@@ -403,10 +403,10 @@ body {
                 <table>
                     <tr>
                         <td>
- 				<label>품목:</label>                           
+ 				<label hidden="ture">품목:</label>                           
                         </td>
                         <td>
-					<select name='items' id="items">
+					<select name='items' id="items" hidden="ture">
 						<!--
 						<option value='옥수수' selected>옥수수</option>
 						<option value='땅콩'>땅콩</option>
@@ -477,10 +477,10 @@ body {
                     </tr>
                     <tr>
                         <td>
-                        <label>고객:</label>
+                        <label hidden="ture">고객:</label>
                         </td>
                         <td>
-    					<select name='customer' id="customer">
+    					<select name='customer' id="customer" hidden="ture">
 						<!--
 						<option value='충북' selected>충북</option>
 						<option value='한양'>한양</option>
@@ -489,18 +489,18 @@ body {
 						<option value='기타'>기타</option>
 						-->
 						
-					   </select>                     
+					   </select>                   
                         </td>
                         <td></td>
 
                     </tr>
                     <tr>
                         <td>
-                        <label>기타:</label>
+                        <label>세부 일정 : </label>
                         </td>
                         <td colspan="2">
                         <input type="text" name="etc" id="etc" />
-				        <button onclick="addContact()" style="WIDTH: 50pt; HEIGHT: 30pt">
+				        <button onclick="addContact()" style="WIDTH: 80pt; HEIGHT: 30pt">
 					   추 가
 				        </button> 
                         </td>
@@ -528,11 +528,11 @@ body {
 				<table id="contacts" border="1" cellspacing="0" style="width:100%" class="listview">
 					<th>번호</th>
 					<th>날짜</th>
-					<th>품목</th>
+					<!--<th>품목</th>-->
 					<th>수입</th>
 					<th>지출</th>
-					<th>고객</th>
-					<th>기타</th>
+					<!--<th>고객</th>-->
+					<th>세부 일정</th>
 					<th>삭제</th>
 					<th>수정</th>
 				</table>

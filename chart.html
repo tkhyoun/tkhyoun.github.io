@@ -3,8 +3,6 @@
 	<head>
 		<script src="javascripts/plotly-latest.min.js"></script>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-        		<!--모바일에서 잘보임-->
-		<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, width=device-width" />
 		<title>연간집계</title>
 		<style>
 			input[type=date]::-webkit-inner-spin-button {
@@ -15,11 +13,6 @@
 			}
 		</style>
 		<script>
-							//차트 추가
-							var chartY=[];
-							var chartData=[];
-
-
 			var d = new Date();
 			var nowDay = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
 			var nowTime = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
@@ -157,47 +150,8 @@
 							contactRow.appendChild(year);
 							//contactRow.appendChild(monthset);
 							document.getElementById("contacts").appendChild(contactRow);
-                            
-                            
-							
-							//chart 추가
-							function zeroReturn(arg1){
-   											if(arg1==0)
-   											return("");
-											else{
-											var arg3;
-											arg3=Number(arg1);
-											var arg2=arg3.toLocaleString();
-											
-											return(arg2+" "+items.textContent);	
-												}
-											};
-							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
-							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
-							var trace = {
- 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  									 y: chartY,
-  									type: 'scatter',
 
- 									 mode: 'lines+markers+text',
-  									name: '',
-  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
-  									textposition: 'right',
-  									textfont: {
-  									  size: 15
- 									 }
-
-									};
-							chartData.push(trace);
-							   
-
-						}
-						//차트 추가
-						Plotly.newPlot('my-graph1', chartData, layout);
-						chartY.splice(0,chartY.length);
-						chartData.splice(0,chartData.length);
-                        
-
+						};
 						var contactRow = document.createElement("tr");
 						var total1 = document.createElement("td");
 						var total2 = document.createElement("td");
@@ -333,47 +287,7 @@
 							//contactRow.appendChild(monthset);
 							document.getElementById("contacts2").appendChild(contactRow);
 
-                            
-                            
-							
-							//chart 추가
-							function zeroReturn(arg1){
-   											if(arg1==0)
-   											return("");
-											else{
-											var arg3;
-											arg3=Number(arg1);
-											var arg2=arg3.toLocaleString();
-											
-											return(arg2+" "+items.textContent);	
-												}
-											};
-							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
-							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
-							var trace = {
- 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  									 y: chartY,
-  									type: 'scatter',
-
- 									 mode: 'lines+markers+text',
-  									name: '',
-  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
-  									textposition: 'right',
-  									textfont: {
-  									  size: 15
- 									 }
-
-									};
-							chartData.push(trace);
-							   
-
 						}
-						//차트 추가
-						Plotly.newPlot('my-graph2', chartData, layout);
-						chartY.splice(0,chartY.length);
-						chartData.splice(0,chartData.length);
-                        
-
 						var contactRow = document.createElement("tr");
 						var total1 = document.createElement("td");
 						var total2 = document.createElement("td");
@@ -512,47 +426,7 @@
 							//contactRow.appendChild(monthset);
 							document.getElementById("contacts3").appendChild(contactRow);
 
-                            
-                            
-							
-							//chart 추가
-							function zeroReturn(arg1){
-   											if(arg1==0)
-   											return("");
-											else{
-											var arg3;
-											arg3=Number(arg1);
-											var arg2=arg3.toLocaleString();
-											
-											return(arg2+" "+items.textContent);	
-												}
-											};
-							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
-							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
-							var trace = {
- 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  									 y: chartY,
-  									type: 'scatter',
-
- 									 mode: 'lines+markers+text',
-  									name: '',
-  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
-  									textposition: 'right',
-  									textfont: {
-  									  size: 15
- 									 }
-
-									};
-							chartData.push(trace);
-							   
-
-						}
-						//차트 추가
-						Plotly.newPlot('my-graph3', chartData, layout);
-						chartY.splice(0,chartY.length);
-						chartData.splice(0,chartData.length);
-                        
-
+						};
 						var contactRow = document.createElement("tr");
 						var total1 = document.createElement("td");
 						var total2 = document.createElement("td");
@@ -603,11 +477,8 @@
 				});
 			}
 			function listContacts4(year) {
+				db.transaction(function(tx) {
 
-
-
-				db.transaction(function(tx) {		
-	
 					tx.executeSql("SELECT customer,SUM(CASE WHEN date LIKE '" + year + "-01%' THEN outlay ELSE 0 END) month1 " + ",SUM(CASE WHEN date LIKE '" + year + "-02%' THEN outlay ELSE 0 END) month2 " + ",SUM(CASE WHEN date LIKE '" + year + "-03%' THEN outlay ELSE 0 END) month3 " + ",SUM(CASE WHEN date LIKE '" + year + "-04%' THEN outlay ELSE 0 END) month4 " + ",SUM(CASE WHEN date LIKE '" + year + "-05%' THEN outlay ELSE 0 END) month5 " + ",SUM(CASE WHEN date LIKE '" + year + "-06%' THEN outlay ELSE 0 END) month6 " + ",SUM(CASE WHEN date LIKE '" + year + "-07%' THEN outlay ELSE 0 END) month7 " + ",SUM(CASE WHEN date LIKE '" + year + "-08%' THEN outlay ELSE 0 END) month8 " + ",SUM(CASE WHEN date LIKE '" + year + "-09%' THEN outlay ELSE 0 END) month9 " + ",SUM(CASE WHEN date LIKE '" + year + "-10%' THEN outlay ELSE 0 END) month10 " + ",SUM(CASE WHEN date LIKE '" + year + "-11%' THEN outlay ELSE 0 END) month11 " + ",SUM(CASE WHEN date LIKE '" + year + "-12%' THEN outlay ELSE 0 END) month12 " + ",SUM(CASE WHEN date LIKE '" + year + "%' THEN outlay ELSE 0 END) year " + "FROM account " + "group by customer order by month1 desc", [], function(tx, results) {
 						var len = results.rows.length;
 
@@ -689,45 +560,8 @@
 							contactRow.appendChild(year);
 							//contactRow.appendChild(monthset);
 							document.getElementById("contacts4").appendChild(contactRow);
-							
-							//chart 추가
-							function zeroReturn(arg1){
-   											if(arg1==0)
-   											return("");
-											else{
-											var arg3;
-											arg3=Number(arg1);
-											var arg2=arg3.toLocaleString();
-											
-											return(arg2+" "+items.textContent);	
-												}
-											};
-							//chartY=[month1,month2,month3,month4,month5,month6,month7,month8,month9,month10,month11,month12];
-							chartY=[month1.textContent,month2.textContent,month3.textContent,month4.textContent,month5.textContent,month6.textContent,month7.textContent,month8.textContent,month9.textContent,month10.textContent,month11.textContent,month12.textContent];
-							var trace = {
- 									 x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  									 y: chartY,
-  									type: 'scatter',
-
- 									 mode: 'lines+markers+text',
-  									name: '',
-  									text: [zeroReturn(month1.textContent),zeroReturn(month2.textContent),zeroReturn(month3.textContent),zeroReturn(month4.textContent),zeroReturn(month5.textContent),zeroReturn(month6.textContent),zeroReturn(month7.textContent),zeroReturn(month8.textContent),zeroReturn(month9.textContent),zeroReturn(month10.textContent),zeroReturn(month11.textContent),zeroReturn(month12.textContent)],
-  									textposition: 'right',
-  									textfont: {
-  									  size: 15
- 									 }
-
-									};
-							chartData.push(trace);
-							   
 
 						}
-						//차트 추가
-						Plotly.newPlot('my-graph4', chartData, layout);
-						chartY.splice(0,chartY.length);
-						chartData.splice(0,chartData.length);
-                        
-
 						var contactRow = document.createElement("tr");
 						var total1 = document.createElement("td");
 						var total2 = document.createElement("td");
@@ -821,9 +655,8 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>합계</th>
+					<th>함계</th>
 				</table>
-                    <div id="my-graph1" style="width:900px;height:450px;"></div>
 				<h1>품목별 지출 총액</h1>
 				<table id="contacts2" border="1" cellspacing="0" style="width:100%">
 					<th>품목</th>
@@ -839,9 +672,8 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>합계</th>
+					<th>함계</th>
 				</table>
-                    <div id="my-graph2" style="width:900px;height:450px;"></div>
                 <h1>거래처별 수입 총액</h1>
 				<table id="contacts3" border="1" cellspacing="0" style="width:100%">
 					<th>품목</th>
@@ -857,9 +689,8 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>합계</th>
+					<th>함계</th>
 				</table>
-                    <div id="my-graph3" style="width:900px;height:450px;"></div>
 				<h1>거래처별 지출 총액</h1>
 				<table id="contacts4" border="1" cellspacing="0" style="width:100%">
 					<th>품목</th>
@@ -875,7 +706,7 @@
 					<th>10월</th>
 					<th>11월</th>
 					<th>12월</th>
-					<th>합계</th>
+					<th>함계</th>
 				</table>
 				<script>
 					//get 형식 파라매타 가져오기
@@ -908,10 +739,6 @@
                         window.addEventListener("load", listContacts4(year), true);
 						document.getElementById("date").value = bdate;
 						//현재날짜
-						
-
-
-
 					} else {
 						var year = request.getParameter("date").split('-');
 						window.addEventListener("load", listContacts(year[0]), true);
@@ -920,8 +747,6 @@
                         window.addEventListener("load", listContacts4(year[0]), true);
 						document.getElementById("date").value = request.getParameter("date");
 						//변경된 날짜 표시
-
-
 					};
 				</script>
 			</section>
@@ -929,61 +754,42 @@
 		</div>
 	
 		<!--<div id="my-graph" style="width:600px;height:250px;"></div>-->
-		  <div id="my-graph4" style="width:900px;height:450px;"></div>
+		  <div id="my-graph"></div>
 
 	<script>
-function chartTrace(){
+Plotly.d3.csv('https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv', function(err, rows){
+var YEAR = 2007;
+var continents = ['Asia', 'Europe', 'Africa', 'Oceania', 'Americas'];
+var POP_TO_PX_SIZE = 2e5;
+function unpack(rows, key) {
+  return rows.map(function(row) { return row[key]; });
+}
 
-};
-var trace1 = {
-  x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  y: [10, 15, 13, 17],
-  type: 'scatter',
-
-  mode: 'lines+markers+text',
-  name: 'Lines, Markers and Text',
-  text: ['Text A', 'Text B', 'Text C'],
-  textposition: 'top right',
-  textfont: {
-    size: 15
-  }
-
-};
-
-var trace2 = {
-  x: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-  y: [16, 5, 11, 9],
-  type: 'scatter'
-};
-
-var data = [trace1];
-data.push(trace2);
-
-var layout = {
-  showlegend: false,
-  //title: 'Title of the Graph',
-  xaxis: {	
-    range: [1, 12],
-    title: '월별',
-    //autotick: false,
-    //ticks: 'outside',
-    //tick0: 0,
-    dtick: 1,
-    //ticklen: 8,
-    //tickwidth: 4,
-    //tickcolor: '#000'
-  },
-  yaxis: {
-   range: [0],
-      tickformat: "04,2f",
-    type: 'scatter',
-    autorange: true,
-    autotick: true,
-    title: '금액'
-  }
+var data = continents.map(function(continent) {
+  var rowsFiltered = rows.filter(function(row) {
+      return (row.continent === continent) && (+row.year === YEAR);
+  });
+  return {
+      mode: 'markers',
+      name: continent,
+      x: unpack(rowsFiltered, 'lifeExp'),
+      y: unpack(rowsFiltered, 'gdpPercap'),
+      text: unpack(rowsFiltered, 'country'),
+      marker: {
+          sizemode: 'area',
+          size: unpack(rowsFiltered, 'pop'),
+          sizeref: POP_TO_PX_SIZE
+      }
   };
-
-//Plotly.newPlot('my-graph', data, layout);
+});
+var layout = {
+  xaxis: {title: '월별'},
+  yaxis: {title: '금액 합계', type: 'log'},
+  margin: {t: 20},
+  hovermode: 'closest'
+};
+Plotly.plot('my-graph', data, layout, {showLink: false});
+});
 	</script>
 
 	</body>
