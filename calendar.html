@@ -39,6 +39,12 @@ body {
 			db.transaction(function(tx) {
 				tx.executeSql("CREATE TABLE IF NOT EXISTS calendar(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
 			});
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS item(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),name)");
+			});
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS customer(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),name)");
+			});
 
 			function addContact() {
 				var obj = document.getElementById('items');
@@ -184,9 +190,9 @@ body {
 			}
 
 			function listContacts(year) {
-				var startyear="2000";
+                var year1="2000";
 				db.transaction(function(tx) {
-					tx.executeSql("SELECT * FROM calendar where date >= '" + startyear + "-01-01" + "' AND date < '" + year + "-12-32" + "' order by id desc", [], function(tx, results) {
+					tx.executeSql("SELECT * FROM calendar where date >= '" + year1 + "-01-01" + "' AND date < '" + year + "-12-32" + "' order by id desc", [], function(tx, results) {
 
 						var len = results.rows.length;
 						var i;
@@ -234,7 +240,7 @@ body {
 				db.transaction(function(tx) {
 					tx.executeSql("SELECT count(*)as 총수 FROM calendar where date >= '" + year + "-01-01" + "' AND date < '" + year + "-12-32" + "'", [], function(tx, results) {
 						//var len = results.rows.length;
-						document.getElementById("countTotal").innerHTML = "거래항목수  : " + results.rows.item(0).총수;
+						document.getElementById("countTotal").innerHTML = year+"년도 거래항목수  : " + results.rows.item(0).총수;
 					});
 				});
 				var incometotal;

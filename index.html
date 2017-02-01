@@ -39,6 +39,12 @@ body {
 			db.transaction(function(tx) {
 				tx.executeSql("CREATE TABLE IF NOT EXISTS account(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),items, income, outlay, customer, etc)");
 			});
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS item(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),name)");
+			});
+			db.transaction(function(tx) {
+				tx.executeSql("CREATE TABLE IF NOT EXISTS customer(id integer primary key autoincrement, date TIMESTAMP DEFAULT (datetime('now','localtime')),name)");
+			});
 
 			function addContact() {
 				var obj = document.getElementById('items');
